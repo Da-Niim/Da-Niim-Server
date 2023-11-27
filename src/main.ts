@@ -1,10 +1,12 @@
 import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
+import { GlobalExceptionFilter } from "./common/exceptions/base.exception.filter"
 
 declare const module: any
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  app.useGlobalFilters(new GlobalExceptionFilter())
   const config = new DocumentBuilder()
     .setTitle("Da-Niim API")
     .setDescription("Da-Niim Server API for Da-Niim Web Service`")

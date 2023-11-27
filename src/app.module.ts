@@ -1,14 +1,15 @@
 import { Module } from "@nestjs/common"
 import { ConfigModule, ConfigService } from "@nestjs/config"
 import { MongooseModule } from "@nestjs/mongoose"
-import e from "express"
 import { MongoMemoryServer } from "mongodb-memory-server"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
+import { FileModule } from "./infra/file/file.module"
 import { Sample, SampleSchema } from "./sample.model"
 
 @Module({
   imports: [
+    FileModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.${process.env.NODE_ENV}.env`],
