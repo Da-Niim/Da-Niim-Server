@@ -6,6 +6,7 @@ import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
 import { FileModule } from "./infra/file/file.module"
 import { Sample, SampleSchema } from "./sample.model"
+import { UserModule } from "./user/user.module"
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { Sample, SampleSchema } from "./sample.model"
       isGlobal: true,
       envFilePath: [`.${process.env.NODE_ENV}.env`],
     }),
+
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
         let mongoUri: string
@@ -33,6 +35,7 @@ import { Sample, SampleSchema } from "./sample.model"
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([{ name: Sample.name, schema: SampleSchema }]),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
