@@ -30,7 +30,7 @@ import { AuthModule } from "./auth/auth.module"
         }
         console.log(`Connected to ${mongoUri}!`)
         return {
-          uri: "mongodb://nest:nest@localhost:27017",
+          uri: mongoUri,
         }
       },
       inject: [ConfigService],
