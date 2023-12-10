@@ -10,5 +10,6 @@ import { FileController } from "./file.controller"
     }),
   ],
   controllers: [FileController],
+  exports: [MulterModule],
 })
 export class FileModule {}

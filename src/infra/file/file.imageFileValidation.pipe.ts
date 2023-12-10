@@ -9,5 +9,6 @@ export class ImageFileValidationPipe
   transform(value: Express.Multer.File, metadata: ArgumentMetadata) {
     if (!value.mimetype.match("image/*"))
       throw new NotAcceptableMimeTypeException(value.mimetype)
+    return value
   }
 }
