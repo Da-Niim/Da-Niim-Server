@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing"
 import { Types } from "mongoose"
-import { FeedPostDto } from "src/feed/feed-post.dto"
+import { FeedPostRequest } from "src/feed/feed-post.dto"
 import { FeedRepository } from "src/feed/feed.repository"
 import { FeedService } from "src/feed/feed.service"
 import { Readable } from "stream"
@@ -27,7 +27,7 @@ describe("FeedService", () => {
     feedService = module.get<FeedService>(FeedService)
   })
   it("post", async () => {
-    const req: FeedPostDto = new FeedPostDto()
+    const req: FeedPostRequest = new FeedPostRequest()
 
     req.name = "name"
     req.content = "content"

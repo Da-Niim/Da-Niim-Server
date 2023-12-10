@@ -1,4 +1,4 @@
-import { FileType } from "./file.type.enum"
+import { FileType } from "./file-type.enum"
 
 export abstract class AbstractFile {
   originalFileName: string

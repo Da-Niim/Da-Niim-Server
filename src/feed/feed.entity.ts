@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { HydratedDocument } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
+import { requireArgument } from "src/common/validation-utils"
 import { Photo } from "../common/photo.model"
 import { Location } from "./location.type"
 
@@ -27,14 +28,19 @@ export class Feed extends AbstractDocument {
 
   constructor(
     name: string,
-    photos: Photo[],
     content: string,
     tag: string[],
     date: string,
-    location: Location,
-    numOfPeople: number,
+    numOfPeople: number = 1,
+    photos?: Photo[],
     expenses?: number,
+    location?: Location,
   ) {
+    requireArgument(
+      photos != undefined ? location != undefined : true,
+      "사진을 첨부한 경우 위치를 입력해야 합니다.",
+    )
+
     super()
     this.name = name
     this.photos = photos

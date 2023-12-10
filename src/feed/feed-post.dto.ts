@@ -1,8 +1,8 @@
 import { Transform, Type } from "class-transformer"
-import { IsNotEmpty, MaxLength } from "class-validator"
+import { IsDateString, IsNotEmpty, MaxLength } from "class-validator"
 import { Location } from "./location.type"
 
-export class FeedPostDto {
+export class FeedPostRequest {
   @IsNotEmpty()
   @Type(() => String)
   name: string
@@ -14,6 +14,7 @@ export class FeedPostDto {
   tag: string[]
   @IsNotEmpty()
   @Type(() => String)
+  @IsDateString()
   date: string
   @Transform(({ value }) => JSON.parse(value))
   location: Location
@@ -23,35 +24,4 @@ export class FeedPostDto {
   @IsNotEmpty()
   @Type(() => Number)
   expenses?: number
-
-  constructor(
-    name: string,
-    content: string,
-    tag: string[],
-    date: string,
-    location: Location,
-    numOfPeople: number,
-    expenses: number,
-  ) {
-    this.name = name
-    this.content = content
-    this.tag = tag
-    this.date = date
-    this.location = location
-    this.numOfPeople = numOfPeople
-    this.expenses = expenses
-  }
-
-  static fromJsonString(value: string): FeedPostDto {
-    const feedPostDtoJson = JSON.parse(value)
-    return new FeedPostDto(
-      feedPostDtoJson.name,
-      feedPostDtoJson.content,
-      feedPostDtoJson.tag,
-      feedPostDtoJson.date,
-      feedPostDtoJson.location,
-      feedPostDtoJson.numOfPeople,
-      feedPostDtoJson.expenses,
-    )
-  }
 }

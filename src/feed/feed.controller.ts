@@ -1,14 +1,15 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
-import { BodyInterceptor } from "src/common/interceptors/bodyFieldParse.interceptor"
 import { MultiImageFileValidationPipe } from "src/infra/file/file.multiImageFileValidation.pipe"
-import { FeedPostDto } from "./feed-post.dto"
+import { FeedPostRequest } from "./feed-post.dto"
 import { FeedService } from "./feed.service"
 
 @Controller("feeds")
@@ -16,8 +17,8 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(
-    BodyInterceptor,
     FileFieldsInterceptor([
       {
         name: "files",
@@ -26,11 +27,11 @@ export class FeedController {
     ]),
   )
   async postFeed(
-    @Body() req: FeedPostDto,
+    @Body() req: FeedPostRequest,
     @UploadedFiles(new MultiImageFileValidationPipe())
     files: { files: Express.Multer.File[] },
-  ): Promise<string> {
-    await this.feedService.postFeed(req, files.files)
-    return "success"
+  ): Promise<any> {
+    const created = await this.feedService.postFeed(req, files.files)
+    return { _id: created }
   }
 }

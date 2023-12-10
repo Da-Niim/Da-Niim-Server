@@ -1,5 +1,5 @@
 import { S3Client } from "@aws-sdk/client-s3"
-import { Injectable, UseFilters } from "@nestjs/common"
+import { Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { MulterOptionsFactory } from "@nestjs/platform-express"
 import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface"
@@ -7,7 +7,6 @@ import { diskStorage } from "multer"
 import s3Storage from "multer-s3"
 import { extname } from "path"
 import { v4 as uuid } from "uuid"
-import { NotAcceptableMimeTypeException } from "./file.exception"
 
 @Injectable()
 export class MulterConfigService implements MulterOptionsFactory {
