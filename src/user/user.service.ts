@@ -1,30 +1,35 @@
+import { UserRepository } from "./repository/user.repository"
 import { BadRequestException, Injectable } from "@nestjs/common"
-import { InjectModel } from "@nestjs/mongoose"
-import { Model } from "mongoose"
-import { User } from "./entity/user.entity"
+
+import { AuthService } from "src/auth/auth.service"
+import { UserRegisterDto } from "./dto/user-register.dto"
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    // @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly userRepository: UserRepository,
+    private readonly authService: AuthService,
   ) {}
-  async createUser(user: User) {
-    const isExistUserId = await this.userModel.exists({ userId: user.userId })
+  async registerUser(user: UserRegisterDto) {
+    const isExistUserId = await this.userRepository.isExistUserId(user.userId)
     if (isExistUserId)
       throw new BadRequestException("이미 존재하는 아이디입니다.")
-    const isExistEmail = await this.userModel.exists({ email: user.email })
+    const isExistEmail = await this.userRepository.isExistEmail(user.email)
     if (isExistEmail)
       throw new BadRequestException("이미 존재하는 이메일입니다.")
-    const isExistPhoneNumber = await this.userModel.exists({
-      phoneNumber: user.phoneNumber,
-    })
+    const isExistPhoneNumber = await this.userRepository.isExistPhoneNumber(
+      user.phoneNumber,
+    )
     if (isExistPhoneNumber)
       throw new BadRequestException("이미 존재하는 핸드폰 번호입니다.")
+    const hashedPassword = await this.authService.hashingPassword(user.password)
 
-    const newUser = new this.userModel({
+    const newUser = this.userRepository.registerUser({
       ...user,
+      password: hashedPassword,
     })
-    newUser.save()
+
     return newUser
   }
 }
