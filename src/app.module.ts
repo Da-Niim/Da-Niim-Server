@@ -12,6 +12,10 @@ import { Sample, SampleSchema } from "./sample.model"
   imports: [
     FeedModule,
     FileModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [`.${process.env.NODE_ENV}.env`],
+    }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
         let mongoUri: string
@@ -29,10 +33,6 @@ import { Sample, SampleSchema } from "./sample.model"
         }
       },
       inject: [ConfigService],
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: [`.${process.env.NODE_ENV}.env`],
     }),
     MongooseModule.forFeature([{ name: Sample.name, schema: SampleSchema }]),
   ],
