@@ -4,6 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose"
 import { MongoMemoryServer } from "mongodb-memory-server"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
+import { FeedModule } from "./feed/feed.module"
 import { FileModule } from "./infra/file/file.module"
 import { Sample, SampleSchema } from "./sample.model"
 import { UserModule } from "./user/user.module"
@@ -11,6 +12,7 @@ import { AuthModule } from "./auth/auth.module"
 
 @Module({
   imports: [
+    FeedModule,
     FileModule,
     ConfigModule.forRoot({
       isGlobal: true,

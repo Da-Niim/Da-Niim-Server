@@ -92,32 +92,32 @@ describe("MongoDB 연결 테스트(mongodb-memory-server)", () => {
   })
 })
 
-describe("MongoDB 연결 테스트(mongodb)", () => {
-  let repository: SampleRepository
+// describe("MongoDB 연결 테스트(mongodb)", () => {
+//   let repository: SampleRepository
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        MongooseModule.forRoot("mongodb://nest:nest@localhost:27017/"),
-        MongooseModule.forFeature([
-          { name: Sample.name, schema: SampleSchema },
-        ]),
-      ],
-      providers: [SampleRepository],
-    }).compile()
+//   beforeEach(async () => {
+//     const module: TestingModule = await Test.createTestingModule({
+//       imports: [
+//         MongooseModule.forRoot("mongodb://nest:nest@localhost:27017/"),
+//         MongooseModule.forFeature([
+//           { name: Sample.name, schema: SampleSchema },
+//         ]),
+//       ],
+//       providers: [SampleRepository],
+//     }).compile()
 
-    repository = module.get<SampleRepository>(SampleRepository)
-  })
+//     repository = module.get<SampleRepository>(SampleRepository)
+//   })
 
-  it("should successfully save mongoose model", async () => {
-    const sampleData = {
-      _id: new Types.ObjectId(),
-      name: "이름",
-    }
+//   it("should successfully save mongoose model", async () => {
+//     const sampleData = {
+//       _id: new Types.ObjectId(),
+//       name: "이름",
+//     }
 
-    const savedSample = await repository.save(sampleData)
-    const find = await repository.findById(savedSample._id)
+//     const savedSample = await repository.save(sampleData)
+//     const find = await repository.findById(savedSample._id)
 
-    console.log(find)
-  })
-})
+//     console.log(find)
+//   })
+// })

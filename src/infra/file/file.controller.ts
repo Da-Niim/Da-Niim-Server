@@ -17,6 +17,7 @@ export class FileController {
     @UploadedFile(new ImageFileValidationPipe())
     file: Express.Multer.File,
   ): Express.Multer.File {
+    console.log(file)
     return file
   }
 }
