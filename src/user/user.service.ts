@@ -1,16 +1,25 @@
 import { UserRepository } from "./repository/user.repository"
 import { BadRequestException, Injectable } from "@nestjs/common"
-
-import { AuthService } from "src/auth/auth.service"
 import { UserRegisterDto } from "./dto/user-register.dto"
-
+import * as bcrypt from "bcrypt"
+import { ConfigService } from "@nestjs/config"
+import { ENV_HASH_ROUNDS_KEY } from "src/common/const/env-keys.const"
 @Injectable()
 export class UserService {
   constructor(
-    // @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly userRepository: UserRepository,
-    private readonly authService: AuthService,
+
+    private readonly configService: ConfigService,
   ) {}
+  async hashingPassword(password: string) {
+    const hashedPassword = bcrypt.hash(
+      password,
+      parseInt(this.configService.get<string>(ENV_HASH_ROUNDS_KEY)),
+    )
+
+    return hashedPassword
+  }
+
   async registerUser(user: UserRegisterDto) {
     const isExistUserId = await this.userRepository.isExistUserId(user.userId)
     if (isExistUserId)
@@ -23,13 +32,13 @@ export class UserService {
     )
     if (isExistPhoneNumber)
       throw new BadRequestException("이미 존재하는 핸드폰 번호입니다.")
-    const hashedPassword = await this.authService.hashingPassword(user.password)
+    const hashedPassword = await this.hashingPassword(user.password)
 
-    const newUser = this.userRepository.registerUser({
+    const newUser = await this.userRepository.registerUser({
       ...user,
       password: hashedPassword,
     })
 
-    return newUser
+    return { userId: newUser.userId }
   }
 }
