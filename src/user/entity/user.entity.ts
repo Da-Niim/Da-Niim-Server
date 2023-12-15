@@ -16,9 +16,6 @@ export class User extends AbstractDocument {
 
   @MinLength(2, { message: "이름은 최소 2자 이상이어야 합니다." })
   @MaxLength(10, { message: "이름은 최대 20자 이하여야 합니다." })
-  @Matches(/^[a-zA-Z0-9]*$/, {
-    message: "이름은 특수 문자를 포함할 수 없습니다.",
-  })
   @Prop({ required: true })
   username: string
 
