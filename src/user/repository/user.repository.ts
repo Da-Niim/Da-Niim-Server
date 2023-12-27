@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
-import { Model } from "mongoose"
+import { Model, Types } from "mongoose"
 import { User } from "../entity/user.entity"
 import { UserRegisterDto } from "../dto/user-register.dto"
 
@@ -10,7 +10,10 @@ export class UserRepository {
 
   // 사용자 생성
   async registerUser(userData: UserRegisterDto): Promise<User> {
-    const newUser = new this.userModel(userData)
+    const newUser = new this.userModel({
+      _id: new Types.ObjectId(),
+      ...userData,
+    })
     return newUser.save()
   }
 

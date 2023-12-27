@@ -1,0 +1,2 @@
+export const ENV_JWT_SECRET_KEY = "JWT_SECRET"
+export const ENV_HASH_ROUNDS_KEY = "HASH_ROUNDS"
