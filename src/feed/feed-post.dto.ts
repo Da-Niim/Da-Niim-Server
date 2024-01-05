@@ -5,7 +5,7 @@ import { Location } from "./location.type"
 export class FeedPostRequest {
   @IsNotEmpty()
   @Type(() => String)
-  name: string
+  title: string
   @IsNotEmpty()
   @MaxLength(500)
   @Type(() => String)

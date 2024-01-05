@@ -20,7 +20,7 @@ describe("FeedPostDto", () => {
     try {
       await validationPipe.transform(
         <FeedPostRequest>{
-          name: "",
+          title: "",
           content: "",
           date: "",
           tag: ["tag1", "tag2"],
@@ -30,7 +30,7 @@ describe("FeedPostDto", () => {
     } catch (err) {
       expect(err.getResponse().statusCode).toBe(400)
       expect(err.getResponse().message).toStrictEqual([
-        "name should not be empty",
+        "title should not be empty",
         "content should not be empty",
         "date must be a valid ISO 8601 date string",
         "date should not be empty",
@@ -44,7 +44,7 @@ describe("FeedPostDto", () => {
     try {
       await validationPipe.transform(
         <FeedPostRequest>{
-          name: "test",
+          title: "test",
           content: generate(501),
           tag: ["test"],
           date: "2020-12-12",
@@ -65,7 +65,7 @@ describe("FeedPostDto", () => {
     try {
       await validationPipe.transform(
         <FeedPostRequest>{
-          name: "test",
+          title: "test",
           content: "content",
           tag: ["test"],
           date: "zzz",

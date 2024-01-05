@@ -8,6 +8,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
+import { Types } from "mongoose"
 import { MultiImageFileValidationPipe } from "src/infra/file/file.multiImageFileValidation.pipe"
 import { FeedPostRequest } from "./feed-post.dto"
 import { FeedService } from "./feed.service"
@@ -31,7 +32,11 @@ export class FeedController {
     @UploadedFiles(new MultiImageFileValidationPipe())
     files: { files: Express.Multer.File[] },
   ): Promise<any> {
-    const created = await this.feedService.postFeed(req, files.files)
+    const created = await this.feedService.postFeed(
+      Types.ObjectId.createFromTime(1),
+      req,
+      files.files,
+    )
     return { _id: created }
   }
 }
