@@ -40,7 +40,7 @@ describe("Feed", () => {
     return request(app.getHttpServer())
       .post("/feeds")
       .send({
-        name: "test",
+        title: "test",
         content: "content",
         tag: "tag1",
         date: "2020-12-12",

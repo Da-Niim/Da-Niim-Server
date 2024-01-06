@@ -28,8 +28,9 @@ describe("FeedService", () => {
   })
   it("post", async () => {
     const req: FeedPostRequest = new FeedPostRequest()
+    const userId = Types.ObjectId.createFromTime(1)
 
-    req.name = "name"
+    req.title = "title"
     req.content = "content"
     req.date = "2020-12-12"
     req.location = {
@@ -56,7 +57,7 @@ describe("FeedService", () => {
       buffer: undefined,
     }
 
-    await feedService.postFeed(req, [file])
+    await feedService.postFeed(userId, req, [file])
 
     expect(mockCreatefn).toBeCalled()
   })

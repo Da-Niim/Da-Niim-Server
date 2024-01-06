@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { HydratedDocument } from "mongoose"
+import { HydratedDocument, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
 import { requireArgument } from "src/common/validation-utils"
 import { Photo } from "../common/photo.model"
@@ -10,7 +10,9 @@ export type FeedDocument = HydratedDocument<Feed>
 @Schema()
 export class Feed extends AbstractDocument {
   @Prop({ required: true })
-  name: string
+  userId: Types.ObjectId
+  @Prop({ required: true })
+  title: string
   @Prop()
   photos: Photo[]
   @Prop({ required: true })
@@ -27,7 +29,8 @@ export class Feed extends AbstractDocument {
   expenses?: number
 
   constructor(
-    name: string,
+    userId: Types.ObjectId,
+    title: string,
     content: string,
     tag: string[],
     date: string,
@@ -40,9 +43,9 @@ export class Feed extends AbstractDocument {
       photos != undefined ? location != undefined : true,
       "사진을 첨부한 경우 위치를 입력해야 합니다.",
     )
-
     super()
-    this.name = name
+    this.userId = userId
+    this.title = title
     this.photos = photos
     this.content = content
     this.tag = tag
