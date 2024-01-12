@@ -16,15 +16,4 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello()
   }
-
-  @Post()
-  saveSample() {
-    this.appService.save("name")
-  }
-
-  @Get("sample/:id")
-  findById(@Param("id") id: string) {
-    const objId = new Types.ObjectId(id)
-    this.appService.findById(objId)
-  }
 }

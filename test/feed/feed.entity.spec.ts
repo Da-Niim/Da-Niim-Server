@@ -1,6 +1,6 @@
 import { Types } from "mongoose"
 import { Photo } from "src/common/photo.model"
-import { Feed } from "src/feed/feed.entity"
+import { Feed } from "src/feed/domain/feed.entity"
 
 describe("Feed Entity", () => {
   describe("post", () => {

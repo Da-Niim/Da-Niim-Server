@@ -19,10 +19,11 @@ export class BearerTokenGuard implements CanActivate {
     if (!rawToken) throw new UnauthorizedException("토큰이 존재하지 않습니다.")
     const token = this.authService.extractTokenFromHeader(rawToken, true)
     const result = this.authService.verifyToken(token)
-    const user = await this.userRepository.findOneUser(result.userId)
+    const user = await this.userRepository.findByEmail(result.email)
     request.user = user
     request.token = token
     request.tokenType = result.type
+
     return true
   }
 }
