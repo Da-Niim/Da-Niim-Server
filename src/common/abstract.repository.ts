@@ -33,6 +33,11 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async findOne(filterQuery: FilterQuery<TDocument>) {
     const document = await this.model.findOne(filterQuery, {}, { lean: true })
+    return document
+  }
+
+  async getOne(filterQuery: FilterQuery<TDocument>) {
+    const document = await this.model.findOne(filterQuery, {}, { lean: true })
 
     if (!document) {
       this.logger.warn("Document not found with filterQuery", filterQuery)
@@ -72,6 +77,10 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async find(filterQuery: FilterQuery<TDocument>) {
     return this.model.find(filterQuery, {}, { lean: true })
+  }
+
+  async delete(filterQuery: FilterQuery<TDocument>) {
+    return this.model.deleteOne(filterQuery, {})
   }
 
   async stratTransaction() {

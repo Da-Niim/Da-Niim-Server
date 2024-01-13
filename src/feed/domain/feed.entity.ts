@@ -2,8 +2,8 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { HydratedDocument, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
 import { requireArgument } from "src/common/validation-utils"
-import { Photo } from "../common/photo.model"
-import { Location } from "./location.type"
+import { Photo } from "../../common/photo.model"
+import { Location } from "../location.type"
 
 export type FeedDocument = HydratedDocument<Feed>
 

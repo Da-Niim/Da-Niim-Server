@@ -64,9 +64,12 @@ export class AuthService {
       throw new UnauthorizedException("토큰이 만료되었거나 잘못된 토큰입니다.")
     }
   }
-  signToken(user: Pick<User, "_id" | "userId">, isRefreshToken: boolean) {
+  signToken(
+    user: Pick<User, "_id" | "userId" | "email">,
+    isRefreshToken: boolean,
+  ) {
     const payload = {
-      email: user.userId,
+      email: user.email,
       sub: user._id,
       type: isRefreshToken ? "refresh" : "access",
     }
@@ -84,7 +87,7 @@ export class AuthService {
     }
     return this.signToken({ ...decoded }, isRefreshToken)
   }
-  issuanceToken(user: Pick<User, "_id" | "userId">) {
+  issuanceToken(user: Pick<User, "_id" | "userId" | "email">) {
     const accessToken = this.signToken(user, false)
     const refreshToken = this.signToken(user, true)
     return {

@@ -10,12 +10,17 @@ import { MongoMemoryServer } from "mongodb-memory-server"
         let mongoUri: string
         switch (process.env.NODE_ENV) {
           case "dev":
-            const mongod = await MongoMemoryServer.create() // new MongoMemoryServer()는 에러 발생함
+            const mongod = await MongoMemoryServer.create({
+              instance: {
+                port: 27017,
+              },
+            }) // new MongoMemoryServer()는 에러 발생함
             mongoUri = mongod.getUri()
             break
           default:
             mongoUri = configService.get<string>("MONGO_URI")
         }
+        console.log("DB Start!")
         console.log(`Connected to ${mongoUri}!`)
         return {
           uri: mongoUri,
@@ -24,5 +29,6 @@ import { MongoMemoryServer } from "mongodb-memory-server"
       inject: [ConfigService],
     }),
   ],
+  exports: [DatabaseModule],
 })
 export class DatabaseModule {}
