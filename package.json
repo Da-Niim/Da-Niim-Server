@@ -30,21 +30,26 @@
     "@nestjs/mongoose": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.14",
+    "@types/axios": "^0.14.0",
     "@types/multer": "^1.4.10",
     "@types/randomstring": "^1.1.11",
     "@types/uuid": "^9.0.7",
+    "axios": "^1.6.5",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "deep-parse-json": "^1.0.2",
+    "exif-parser": "^0.1.12",
     "lodash": "^4.17.21",
     "mongodb-memory-server": "^9.0.1",
     "mongoose": "^8.0.0",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^3.0.1",
+    "path": "^0.12.7",
     "randomstring": "^1.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "ts-exif-parser": "^0.2.2",
     "uuid": "^9.0.1",
     "validator": "^13.11.0"
   },
@@ -77,6 +82,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "jest": {
+    "setupFiles": ["<rootDir>/test/setEnvFiles.ts"],
     "roots": [
       "<rootDir>"
     ],

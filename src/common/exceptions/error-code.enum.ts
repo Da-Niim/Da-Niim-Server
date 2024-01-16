@@ -1,4 +1,5 @@
 export enum ErrorCode {
-  IllegalArgument = "0001",
-  FileMimeTypeNotAcceptable = "3001",
+  FileMimeTypeNotAcceptable = "3000",
+  NotFound = "1000",
+  IllegalArgument = "1002",
 }

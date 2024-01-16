@@ -18,27 +18,6 @@ import { DatabaseModule } from "./infra/db/db.module"
       isGlobal: true,
       envFilePath: [`.${process.env.NODE_ENV}.env`],
     }),
-
-    // MongooseModule.forRootAsync({
-    //   useFactory: async (configService: ConfigService) => {
-    //     let mongoUri: string
-    //     switch (process.env.NODE_ENV) {
-    //       case "dev":
-    //         const mongod = await MongoMemoryServer.create({
-    //           instance: { port: 27071 },
-    //         }) // new MongoMemoryServer()는 에러 발생함
-    //         mongoUri = mongod.getUri()
-    //         break
-    //       default:
-    //         mongoUri = configService.get<string>("MONGO_URI")
-    //     }
-    //     console.log(`Connected to ${mongoUri}!`)
-    //     return {
-    //       uri: mongoUri,
-    //     }
-    //   },
-    //   inject: [ConfigService],
-    // }),
     DatabaseModule,
     UserModule,
     AuthModule,

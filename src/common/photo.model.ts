@@ -9,7 +9,7 @@ export class Photo extends AbstractFile {
     this.type = FileType.PHOTO
   }
 
-  static async of(files: Express.Multer.File[]): Promise<Photo[]> {
+  static of(files: Express.Multer.File[]): Photo[] {
     return files.map((f) => {
       return new Photo(f.originalname, f.filename)
     })
