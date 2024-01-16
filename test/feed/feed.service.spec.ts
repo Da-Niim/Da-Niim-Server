@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing"
 import { Types } from "mongoose"
 import { FeedPostRequest } from "src/feed/feed-post.dto"
 import { FeedRepository } from "src/feed/infra/feed.repository"
-import { FeedService } from "src/feed/feed.service"
+import { FeedService } from "src/feed/application/feed.service"
 import { Readable } from "stream"
 
 describe("FeedService", () => {

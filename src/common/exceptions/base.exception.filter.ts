@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         exception instanceof BaseException || exception instanceof HttpException
       )
     ) {
-      console.log("exception: " + exception)
+      console.log(`exception: ${exception}`)
       throw new InternalServerErrorException("Uncatchable Error.")
     }
 

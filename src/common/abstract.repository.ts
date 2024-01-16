@@ -8,6 +8,7 @@ import {
   UpdateQuery,
 } from "mongoose"
 import { AbstractDocument } from "./abstract.schema"
+import { DocumentNotFoundException } from "./exceptions/not-found.exception"
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   protected abstract readonly logger: Logger
@@ -41,7 +42,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
     if (!document) {
       this.logger.warn("Document not found with filterQuery", filterQuery)
-      throw new NotFoundException("Document not found.")
+      throw new DocumentNotFoundException("Document not found.")
     }
 
     return document
@@ -58,7 +59,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
     if (!document) {
       this.logger.warn("Document not found with filterQuery", filterQuery)
-      throw new NotFoundException("Document not found.")
+      throw new DocumentNotFoundException("Document not found.")
     }
 
     return document

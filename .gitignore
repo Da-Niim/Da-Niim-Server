@@ -137,3 +137,6 @@ docker
 # Mongo
 mongodb.yml
 mongo
+
+# Env
+*.env
