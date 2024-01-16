@@ -20,13 +20,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         exception instanceof BaseException || exception instanceof HttpException
       )
     ) {
-      console.log("exception: " + exception)
       throw new InternalServerErrorException("Uncatchable Error.")
     }
 
     const response = (exception as BaseException).getResponse()
-
-    console.log("exception response: " + response)
 
     const log = {
       timestamp: new Date(),
@@ -34,8 +31,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       response: response,
       stack: (exception as HttpException).stack,
     }
-
-    console.log("exception log: " + log)
 
     res.status((exception as BaseException).getStatus()).json({
       timestamp: new Date(),

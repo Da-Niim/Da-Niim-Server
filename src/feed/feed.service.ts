@@ -38,7 +38,6 @@ export class FeedService {
 
   async getFeed(title: string) {
     const feed = await this.feedRepository.findOne({ title: title })
-    console.log(feed)
   }
 
   async likeFeed(userId: Types.ObjectId, feedId: Types.ObjectId) {

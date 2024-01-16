@@ -57,7 +57,7 @@ export class FeedController {
   @UseGuards(BearerTokenGuard)
   async likeFeed(@Param("id") id: string, @Req() req: Request) {
     const user: User = req.user
-    console.log(id)
+
     await this.feedService.likeFeed(user._id, new Types.ObjectId(id))
   }
 }
