@@ -4,6 +4,8 @@ import { UserRegisterDto } from "./dto/user-register.dto"
 import * as bcrypt from "bcrypt"
 import { ConfigService } from "@nestjs/config"
 import { ENV_HASH_ROUNDS_KEY } from "src/common/const/env-keys.const"
+import { Request } from "express"
+
 @Injectable()
 export class UserService {
   constructor(
@@ -40,5 +42,12 @@ export class UserService {
     })
 
     return { userId: newUser.userId }
+  }
+
+  getUserInfo(requestDto: Request) {
+    return {
+      nickname: requestDto.user.nickname,
+      profileImage: requestDto.user.profileImage,
+    }
   }
 }
