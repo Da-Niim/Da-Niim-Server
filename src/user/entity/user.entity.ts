@@ -15,9 +15,14 @@ export class User extends AbstractDocument {
   userId: string
 
   @MinLength(2, { message: "이름은 최소 2자 이상이어야 합니다." })
-  @MaxLength(10, { message: "이름은 최대 20자 이하여야 합니다." })
+  @MaxLength(10, { message: "이름은 최대 60자 이하여야 합니다." })
   @Prop({ required: true })
   username: string
+
+  @MinLength(2, { message: "닉네임은 최소 2자 이상이어야 합니다." })
+  @MaxLength(10, { message: "닉네임은 최대 20자 이하여야 합니다." })
+  @Prop({ required: true })
+  nickname: string
 
   @IsEmail()
   @Prop({ required: true })
@@ -46,6 +51,9 @@ export class User extends AbstractDocument {
   })
   @Prop({ required: true })
   birthDate: string
+
+  @Prop({ required: false, default: null })
+  profileImage: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
