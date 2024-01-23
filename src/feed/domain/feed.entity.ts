@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { plainToInstance } from "class-transformer"
 import { FlattenMaps, HydratedDocument, Require_id, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
 import { Location } from "../location.type"
@@ -23,40 +24,18 @@ export class Feed extends AbstractDocument {
   tag: string[]
   @Prop({ required: true })
   date: string
-  @Prop({ type: Object })
-  location: Location
-  @Prop({ required: true })
-  numOfPeople: number
-  @Prop()
+  @Prop({ type: Object, required: false })
+  location?: Location
+  @Prop({ required: false })
+  numOfPeople?: number
+  @Prop({required: false})
   expenses?: number
   @Prop({ type: Number, required: true })
   likeCount: number
 
-  constructor(
-    userId: Types.ObjectId,
-    title: string,
-    photos: Photo[],
-    content: string,
-    tag: string[],
-    date: string,
-    location: Location,
-    numOfPeople: number,
-    likeCount: number,
-    _id?: Types.ObjectId,
-    expenses?: number,
-  ) {
+  constructor(feedProps: Omit<Feed, keyof typeof Feed.prototype>) {
     super()
-    this._id = _id
-    this.userId = userId
-    this.title = title
-    this.photos = photos
-    this.content = content
-    this.tag = tag
-    this.date = date
-    this.location = location
-    this.numOfPeople = numOfPeople
-    this.expenses = expenses
-    this.likeCount = likeCount
+    Object.assign(this, feedProps)
   }
 
   static async create(
@@ -67,11 +46,11 @@ export class Feed extends AbstractDocument {
     date: string,
     numOfPeople: number = 1,
     addressResolver: AddressResolver,
-    files?: Express.Multer.File[],
+    files: Express.Multer.File[],
     expenses?: number,
   ): Promise<Feed> {
     let location: Location
-    let photos = Photo.of(files)
+    let photos = await Photo.of(files)
 
     if (files && files.length > 0) {
       const coord = await addressResolver.resolveCoord(files[0])
@@ -85,40 +64,24 @@ export class Feed extends AbstractDocument {
       }
     }
 
-    return new Feed(
-      userId,
-      title,
-      photos,
-      content,
-      tag,
-      date,
-      location,
-      numOfPeople,
-      1,
-      null,
-      expenses,
-    )
+    return new Feed({
+      userId: userId,
+      title: title,
+      photos: photos,
+      content: content,
+      tag: tag,
+      date: date,
+      location: location,
+      numOfPeople: numOfPeople,
+      likeCount: 1,
+      expenses: expenses,
+    })
   }
 
-  static fromQueryResult(
+  static async fromQueryResult(
     result: FlattenMaps<Feed> & Require_id<{ _id: Types.ObjectId }>,
-  ): Feed {
-    const feedEntity = new Feed(
-      result.userId,
-      result.title,
-      result.photos,
-      result.content,
-      result.tag,
-      result.date,
-      result.location,
-      result.numOfPeople,
-      result.likeCount,
-      result._id,
-      result.expenses,
-    )
-    feedEntity._id = result._id
-
-    return feedEntity
+  ): Promise<Feed> {
+    return plainToInstance(Feed, result)
   }
 
   addLike(userId: Types.ObjectId): FeedLike {

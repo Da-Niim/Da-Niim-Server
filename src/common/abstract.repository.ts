@@ -91,6 +91,10 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     return this.model.countDocuments(filterQuery)
   }
 
+  async exists(filterQuery: FilterQuery<TDocument>) {
+    return this.model.exists(filterQuery)
+  }
+
   async delete(filterQuery: FilterQuery<TDocument>) {
     return this.model.deleteOne(filterQuery, {})
   }

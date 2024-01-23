@@ -63,6 +63,7 @@ export class FeedController {
   }
 
   @Get()
+  @UseGuards(BearerTokenGuard)
   async getFeeds(@Query() query: GetFeedRequest, @Req() req: Request) {
     return await this.feedService.getFeeds(await query.toCommand(req.user._id))
   }

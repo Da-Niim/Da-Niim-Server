@@ -11,6 +11,7 @@ import { AddressResolver } from "../domain/address-resolver.service"
 import { PostFeedCommand } from "./post-feed.command"
 import { UserRepository } from "src/user/repository/user.repository"
 import { GetFeedCommand } from "./get-feed.command"
+import { GetFeedResponse } from "../controller/get-feeds.dto"
 
 @Injectable()
 export class FeedService {
@@ -40,15 +41,17 @@ export class FeedService {
   }
 
   async getFeeds(cmd: GetFeedCommand) {
-    const feed = await this.feedRepository.findWithPagination(cmd.page, cmd.size, null)
+    const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, null)
     const totalElements = await this.feedRepository.count(null)
-    const user = await this.userRepository.findOne({})
+    const user = await this.userRepository.findOne({_id: cmd.userId})
+    const likes = await this.feedLikeRepository.find({userId: cmd.userId, feedId: { $in: feeds.map((feed) => feed._id)}})
+    const commentCount = await this.feedCommentRepository.count({feedId: {$in: feeds.map((feed) => feed._id)}})
 
-    return 
+    return GetFeedResponse.of(feeds, user, likes, false, commentCount)
   }
 
   async likeFeed(userId: Types.ObjectId, feedId: Types.ObjectId) {
-    const feed = Feed.fromQueryResult(
+    const feed = await Feed.fromQueryResult(
       await this.feedRepository.getOne({ _id: feedId }),
     )
 
