@@ -6,7 +6,7 @@ import { AddCommentCommand } from "../application/add-comment.command"
 import { AddSubCommentCommand } from "../application/add-subcomment.command"
 
 export class AddCommentRequest {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "댓글 내용을 입력해주세요." })
   @Type(() => String)
   @ApiProperty({ type: "string", example: "댓글 내용" })
   content: string
