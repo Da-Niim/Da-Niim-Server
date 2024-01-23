@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing"
 import { Types } from "mongoose"
-import { FeedPostRequest } from "src/feed/feed-post.dto"
+import { FeedPostRequest } from "src/feed/controller/post-feed.dto"
 import { FeedRepository } from "src/feed/infra/feed.repository"
 import { FeedService } from "src/feed/application/feed.service"
 import { Readable } from "stream"

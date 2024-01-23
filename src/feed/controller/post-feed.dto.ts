@@ -1,9 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Transform, Type } from "class-transformer"
 import { IsDateString, IsNotEmpty, MaxLength } from "class-validator"
-import { Location } from "./location.type"
+import { Express } from "express"
+import { Types } from "mongoose"
+import { RequireImageException } from "src/common/exceptions/require-image.exception"
+import { PostFeedCommand } from "../application/post-feed.command"
+import { Location } from "../location.type"
 
-export class FeedPostRequest {
+export class PostFeedRequest {
   @IsNotEmpty()
   @Type(() => String)
   @ApiProperty({ type: "string", example: "제목" })
@@ -41,4 +45,18 @@ export class FeedPostRequest {
 
   @ApiProperty({ type: "array", items: { type: "string", format: "binary" } })
   files?: Express.Multer.File[]
+  
+  async toCommand(userId: Types.ObjectId, files?: Express.Multer.File[]): Promise<PostFeedCommand> {
+    if(!files) throw new RequireImageException()
+    return {
+      userId: userId,
+      title: this.title,
+      content: this.content,
+      tag: this.tag,
+      date: this.date,
+      numOfPeople: this.numOfPeople,
+      expenses: this.expenses,
+      files: files
+    }
+  }
 }

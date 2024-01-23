@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { FeedPostRequest } from "../feed-post.dto"
 import { Feed } from "../domain/feed.entity"
 import { FeedRepository } from "../infra/feed.repository"
 import { Types } from "mongoose"
@@ -9,6 +8,9 @@ import { AddCommentCommand } from "./add-comment.command"
 import { FeedComment } from "../domain/feed-comment.entity"
 import { AddSubCommentCommand } from "./add-subcomment.command"
 import { AddressResolver } from "../domain/address-resolver.service"
+import { PostFeedCommand } from "./post-feed.command"
+import { UserRepository } from "src/user/repository/user.repository"
+import { GetFeedCommand } from "./get-feed.command"
 
 @Injectable()
 export class FeedService {
@@ -16,34 +18,33 @@ export class FeedService {
     private readonly feedRepository: FeedRepository,
     private readonly feedLikeRepository: FeedLikeRepository,
     private readonly feedCommentRepository: FeedCommentRepository,
+    private readonly userRepository: UserRepository,
     @Inject("impl") private readonly addressResolver: AddressResolver,
   ) {}
 
-  async postFeed(
-    userId: Types.ObjectId,
-    req: FeedPostRequest,
-    files: Express.Multer.File[],
-  ): Promise<string> {
+  async postFeed(cmd: PostFeedCommand): Promise<string> {
     const feed: Feed = await Feed.create(
-      userId,
-      req.title,
-      req.content,
-      req.tag,
-      req.date,
-      req.numOfPeople,
-      0,
+      cmd.userId,
+      cmd.title,
+      cmd.content,
+      cmd.tag,
+      cmd.date,
+      cmd.numOfPeople,
       this.addressResolver,
-      files,
-      req.expenses,
+      cmd.files,
+      cmd.expenses,
     )
     const saved = await this.feedRepository.create(feed)
 
     return saved._id.toString()
   }
 
-  async getFeed(title: string) {
-    const feed = await this.feedRepository.findOne({ title: title })
-    console.log(feed)
+  async getFeeds(cmd: GetFeedCommand) {
+    const feed = await this.feedRepository.findWithPagination(cmd.page, cmd.size, null)
+    const totalElements = await this.feedRepository.count(null)
+    const user = await this.userRepository.findOne({})
+
+    return 
   }
 
   async likeFeed(userId: Types.ObjectId, feedId: Types.ObjectId) {

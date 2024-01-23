@@ -6,6 +6,7 @@ import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer
 import { diskStorage } from "multer"
 import s3Storage from "multer-s3"
 import { extname } from "path"
+import { IllegalArgumentException } from "src/common/exceptions/illegal-argument.exception"
 import { v4 as uuid } from "uuid"
 
 @Injectable()
@@ -28,7 +29,7 @@ export class MulterConfigService implements MulterOptionsFactory {
             secretAccessKey: this.configService.get("AWS_S3_SECREY_ACCESS_KEY"),
           },
         }),
-        bucket: this.configService.get("AWS_S#_BUCKET"),
+        bucket: this.configService.get("AWS_S3_BUCKET"),
         contentType: s3Storage.AUTO_CONTENT_TYPE,
         metadata(req, file, callback) {
           callback(null, { owner: "it" })

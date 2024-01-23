@@ -1,6 +1,6 @@
 import { Types } from "mongoose"
-import { Photo } from "src/common/photo.model"
 import { Feed } from "src/feed/domain/feed.entity"
+import { Photo } from "src/feed/domain/photo.model"
 
 describe("Feed Entity", () => {
   describe("post", () => {
@@ -20,11 +20,11 @@ describe("Feed Entity", () => {
           new Feed(
             input.userId,
             input.title,
+            input.photos,
             input.content,
             input.tag,
             input.date,
             input.numOfPeople,
-            input.photos,
             input.expenses,
           ),
       ).toThrow()

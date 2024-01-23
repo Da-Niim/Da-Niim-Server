@@ -5,7 +5,9 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseFilePipe,
   Post,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -17,7 +19,6 @@ import { Types } from "mongoose"
 import { BearerTokenGuard } from "src/auth/guard/bearer-token.guard"
 import { MultiImageFileValidationPipe } from "src/infra/file/file.multiImageFileValidation.pipe"
 import { User } from "src/user/entity/user.entity"
-import { FeedPostRequest } from "../feed-post.dto"
 import { FeedService } from "../application/feed.service"
 import { AddCommentRequest } from "./add-comment.request"
 import {
@@ -28,6 +29,8 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger"
+import { GetFeedRequest } from "./get-feeds.dto"
+import { PostFeedRequest } from "./post-feed.dto"
 
 @Controller("feeds")
 @ApiTags("feeds")
@@ -46,25 +49,22 @@ export class FeedController {
       },
     ]),
   )
-  @ApiBody({ type: FeedPostRequest })
+  @ApiBody({ type: PostFeedRequest })
   @ApiBearerAuth("access-token")
   async postFeed(
-    @Body() req: FeedPostRequest,
-    @UploadedFiles(new MultiImageFileValidationPipe())
-    files: { files: Express.Multer.File[] },
+    @Body() req: PostFeedRequest,
     @Req() httpRequest: Request,
+    @UploadedFiles(new MultiImageFileValidationPipe())
+    files?: { files: Express.Multer.File[] },
   ): Promise<any> {
-    const created = await this.feedService.postFeed(
-      httpRequest.user._id,
-      req,
-      files.files,
-    )
+    const cmd = await req.toCommand(httpRequest.user._id, files.files)
+    const created = await this.feedService.postFeed(cmd)
     return { _id: created }
   }
 
-  @Get(":id")
-  async getFeed(@Param("id") id: string) {
-    await this.feedService.getFeed("test")
+  @Get()
+  async getFeeds(@Query() query: GetFeedRequest, @Req() req: Request) {
+    return await this.feedService.getFeeds(await query.toCommand(req.user._id))
   }
 
   @Post(":id/like")

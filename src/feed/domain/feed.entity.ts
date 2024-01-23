@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { FlattenMaps, HydratedDocument, Require_id, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
-import { Photo } from "../../common/photo.model"
 import { Location } from "../location.type"
 import { AddressResolver } from "./address-resolver.service"
 import { FeedComment } from "./feed-comment.entity"
 import { FeedLike } from "./feed-like.entity"
+import { Photo } from "./photo.model"
 
 export type FeedDocument = HydratedDocument<Feed>
 
@@ -66,15 +66,15 @@ export class Feed extends AbstractDocument {
     tag: string[],
     date: string,
     numOfPeople: number = 1,
-    likeCount: number,
     addressResolver: AddressResolver,
-    files: Express.Multer.File[],
+    files?: Express.Multer.File[],
     expenses?: number,
   ): Promise<Feed> {
     let location: Location
+    let photos = Photo.of(files)
 
-    if (files.length > 0) {
-      const coord = addressResolver.resolveCoord(files[0])
+    if (files && files.length > 0) {
+      const coord = await addressResolver.resolveCoord(files[0])
 
       location = {
         name: await addressResolver.resolveAddress(coord),
@@ -88,13 +88,13 @@ export class Feed extends AbstractDocument {
     return new Feed(
       userId,
       title,
-      Photo.of(files),
+      photos,
       content,
       tag,
       date,
       location,
       numOfPeople,
-      likeCount,
+      1,
       null,
       expenses,
     )
