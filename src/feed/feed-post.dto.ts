@@ -22,22 +22,19 @@ export class FeedPostRequest {
   })
   tag: string[]
 
-  @IsNotEmpty()
   @Type(() => String)
   @IsDateString()
   @ApiProperty({ type: "string", example: "2023-04-01" })
-  date: string
+  date?: string
 
   // @Transform(({ value }) => JSON.parse(value))
   // @ApiProperty()
   // location: Location
 
-  @IsNotEmpty()
   @Type(() => Number)
   @ApiProperty({ type: "number", example: 2 })
-  numOfPeople: number
+  numOfPeople?: number
 
-  @IsNotEmpty()
   @Type(() => Number)
   @ApiProperty({ type: "number", example: 250000 })
   expenses?: number
