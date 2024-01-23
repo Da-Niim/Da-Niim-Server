@@ -8,6 +8,7 @@ import {
   MinLength,
 } from "class-validator"
 import { AbstractDocument } from "src/common/abstract.schema"
+import { Types } from "mongoose"
 
 @Schema({ timestamps: true })
 export class User extends AbstractDocument {
@@ -54,6 +55,12 @@ export class User extends AbstractDocument {
 
   @Prop({ required: false, default: null })
   profileImage: string
+
+  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  followers: Types.ObjectId[]
+
+  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  followings: Types.ObjectId[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

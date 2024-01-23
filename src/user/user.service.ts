@@ -48,6 +48,7 @@ export class UserService {
     return {
       nickname: requestDto.user.nickname,
       profileImage: requestDto.user.profileImage,
+      _id: requestDto.user._id,
     }
   }
 }

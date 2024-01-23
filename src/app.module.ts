@@ -9,6 +9,7 @@ import { FileModule } from "./infra/file/file.module"
 import { UserModule } from "./user/user.module"
 import { AuthModule } from "./auth/auth.module"
 import { DatabaseModule } from "./infra/db/db.module"
+import { FollowModule } from "./follow/follow.module"
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { DatabaseModule } from "./infra/db/db.module"
     DatabaseModule,
     UserModule,
     AuthModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [AppService],

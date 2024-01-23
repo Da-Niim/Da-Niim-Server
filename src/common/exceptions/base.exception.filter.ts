@@ -25,14 +25,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     const response = (exception as BaseException).getResponse()
 
-    const log = {
-      timestamp: new Date(),
-      url: req.url,
-      response: response,
-      stack: (exception as HttpException).stack,
-    }
+    // const log = {
+    //   timestamp: new Date(),
+    //   url: req.url,
+    //   response: response,
+    //   stack: (exception as HttpException).stack,
+    // }
 
-    res.status((exception as BaseException).getStatus()).json({
+    res.status((exception as BaseException).getStatus()).send({
       timestamp: new Date(),
       errorCode: (exception as BaseException).errorCode,
       path: req.url,
