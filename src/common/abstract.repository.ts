@@ -1,4 +1,4 @@
-import { Logger, NotFoundException } from "@nestjs/common"
+import { Logger } from "@nestjs/common"
 import {
   Connection,
   FilterQuery,
@@ -82,11 +82,5 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async delete(filterQuery: FilterQuery<TDocument>) {
     return this.model.deleteOne(filterQuery, {})
-  }
-
-  async stratTransaction() {
-    const session = await this.connection.startSession()
-    session.startTransaction()
-    return session
   }
 }

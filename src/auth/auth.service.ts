@@ -97,6 +97,7 @@ export class AuthService {
   }
   async loginUser(user: UserLoginDto) {
     const existUser = await this.userRepository.findOneUser(user.userId)
+
     if (!existUser) throw new BadRequestException("존재하지 않는 아이디입니다.")
     const isOk = await this.authenticatePassword(
       user.password,

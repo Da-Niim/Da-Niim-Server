@@ -8,9 +8,15 @@ import {
   MinLength,
 } from "class-validator"
 import { AbstractDocument } from "src/common/abstract.schema"
+import { FlattenMaps, Require_id, Types } from "mongoose"
+import { plainToInstance } from "class-transformer"
 
 @Schema({ timestamps: true })
 export class User extends AbstractDocument {
+  constructor(userProps: Omit<User, keyof typeof User.prototype>) {
+    super()
+    Object.assign(this, userProps)
+  }
   @Prop({ required: true })
   userId: string
 
@@ -53,7 +59,33 @@ export class User extends AbstractDocument {
   birthDate: string
 
   @Prop({ required: false, default: null })
-  profileImage: string
+  profileImage?: string
+
+  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  followers: Types.ObjectId[]
+
+  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  followings: Types.ObjectId[]
+
+  addFollower(followerId: Types.ObjectId) {
+    this.followers.push(followerId)
+  }
+  removeFollower(followerId: Types.ObjectId) {
+    this.followers = this.followers.filter((id) => id !== followerId)
+  }
+  addFollowing(followingId: Types.ObjectId) {
+    this.followings.push(followingId)
+  }
+  removeFollowing(followingId: Types.ObjectId) {
+    this.followings = this.followings.filter((id) => id !== followingId)
+  }
+
+  static async mapToDomain(
+    result: FlattenMaps<User> & Require_id<{ _id: Types.ObjectId }>,
+  ) {
+    const user = plainToInstance(User, result)
+    return user
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

@@ -9,4 +9,5 @@ export class UserRegisterDto extends PickType(User, [
   "gender",
   "birthDate",
   "username",
+  "nickname",
 ]) {}

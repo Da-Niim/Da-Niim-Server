@@ -5,12 +5,12 @@ import * as bcrypt from "bcrypt"
 import { ConfigService } from "@nestjs/config"
 import { ENV_HASH_ROUNDS_KEY } from "src/common/const/env-keys.const"
 import { Request } from "express"
+import { User } from "./entity/user.entity"
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-
     private readonly configService: ConfigService,
   ) {}
   async hashingPassword(password: string) {
@@ -36,12 +36,14 @@ export class UserService {
       throw new BadRequestException("이미 존재하는 핸드폰 번호입니다.")
     const hashedPassword = await this.hashingPassword(user.password)
 
-    const newUser = await this.userRepository.registerUser({
+    const newUser = new User({
       ...user,
       password: hashedPassword,
     })
 
-    return { userId: newUser.userId }
+    const registerUser = await this.userRepository.create(newUser)
+
+    return { userId: registerUser.userId }
   }
 
   getUserInfo(requestDto: Request) {
