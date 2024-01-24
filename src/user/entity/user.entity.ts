@@ -68,13 +68,17 @@ export class User extends AbstractDocument {
   followings: Types.ObjectId[]
 
   addFollower(followerId: Types.ObjectId) {
-    this.followers.push(followerId)
+    const isInclude = this.followers.includes(followerId)
+    if (!isInclude) this.followers.push(followerId)
+    return
   }
   removeFollower(followerId: Types.ObjectId) {
     this.followers = this.followers.filter((id) => id !== followerId)
   }
   addFollowing(followingId: Types.ObjectId) {
-    this.followings.push(followingId)
+    const isInclude = this.followings.includes(followingId)
+    if (!isInclude) this.followings.push(followingId)
+    return
   }
   removeFollowing(followingId: Types.ObjectId) {
     this.followings = this.followings.filter((id) => id !== followingId)
