@@ -78,4 +78,45 @@ export class UserRepository extends AbstractRepository<User> {
 
     return user.followers
   }
+  async follow(
+    userId: Types.ObjectId,
+    targetUserId: Types.ObjectId,
+  ): Promise<boolean> {
+    try {
+      const targetUser = await User.mapToDomain(
+        await this.userModel.findOne({
+          _id: targetUserId,
+        }),
+      )
+      const currentUser = await User.mapToDomain(
+        await this.userModel.findOne({ _id: userId }),
+      )
+      targetUser.addFollower(currentUser._id)
+      currentUser.addFollowing(targetUserId)
+      this.upsert({ _id: targetUser._id }, targetUser)
+      this.upsert({ _id: userId }, currentUser)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
+  async unFollow(
+    userId: Types.ObjectId,
+    targetUserId: Types.ObjectId,
+  ): Promise<boolean> {
+    try {
+      const targetUser = await this.userModel.findOne({
+        _id: targetUserId,
+      })
+      targetUser.removeFollower(userId)
+      const currentUser = await this.userModel.findOne({ _id: userId })
+      currentUser.removeFollowing(targetUserId)
+      this.upsert({ _id: targetUser._id }, targetUser)
+      this.upsert({ _id: userId }, currentUser)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
 }

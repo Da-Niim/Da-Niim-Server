@@ -3,7 +3,6 @@ import { Injectable } from "@nestjs/common"
 import { UserRepository } from "src/user/repository/user.repository"
 import { FollowDto } from "./dto/follow.dto"
 import { Request } from "express"
-import { User } from "src/user/entity/user.entity"
 
 @Injectable()
 export class FollowService {
@@ -15,33 +14,22 @@ export class FollowService {
     } = requestDto
 
     try {
-      const targetUser = await User.mapToDomain(
-        await this.userRepository.findOne({
-          _id: targetUserId,
-        }),
-      )
-      const currentUser = await User.mapToDomain(
-        await this.userRepository.findOne({ _id }),
-      )
-      targetUser.addFollower(currentUser._id)
-      currentUser.addFollowing(targetUserId)
-      this.userRepository.upsert({ _id: targetUser._id }, targetUser)
-      this.userRepository.upsert({ _id }, currentUser)
-      return "OK"
+      const isSuccess = this.userRepository.follow(_id, targetUserId)
+      if (!isSuccess) throw new Error("Follow Fail")
+      return "Follow Success"
     } catch (error) {
       throw error
     }
   }
   async unFollowUser(data: FollowDto, requestDto: Request): Promise<string> {
     const { targetUserId } = data
-    const { user } = requestDto
+    const {
+      user: { _id },
+    } = requestDto
     try {
-      const targetUser = await this.userRepository.findOne({
-        _id: targetUserId,
-      })
-      targetUser.removeFollower(user._id)
-      user.removeFollowing(targetUserId)
-      return "updatedTargetUser"
+      const isSuccess = this.userRepository.unFollow(_id, targetUserId)
+      if (!isSuccess) throw new Error("UnFollow Fail")
+      return "UnFollow Success"
     } catch (error) {
       throw error
     }
