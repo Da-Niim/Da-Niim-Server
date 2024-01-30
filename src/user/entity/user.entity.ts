@@ -8,9 +8,16 @@ import {
   MinLength,
 } from "class-validator"
 import { AbstractDocument } from "src/common/abstract.schema"
+import { Types } from "mongoose"
+import { AlreadyFollowingException } from "src/follow/already-following.exception"
+import { InternalServerErrorException } from "@nestjs/common"
 
 @Schema({ timestamps: true })
 export class User extends AbstractDocument {
+  constructor(userProps: Omit<User, keyof typeof User.prototype>) {
+    super()
+    Object.assign(this, userProps)
+  }
   @Prop({ required: true })
   userId: string
 
@@ -53,7 +60,35 @@ export class User extends AbstractDocument {
   birthDate: string
 
   @Prop({ required: false, default: null })
-  profileImage: string
+  profileImage?: string
+
+  @Prop([{ type: Array<Types.ObjectId>, ref: "User" }])
+  followers: Types.ObjectId[]
+
+  @Prop([{ type: Array<Types.ObjectId>, ref: "User" }])
+  followings: Types.ObjectId[]
+
+  async follow(targetUser: User) {
+    const isIncludeFollowing = this.followings.some((e) =>
+      e.equals(targetUser._id),
+    )
+
+    const isIncludeFollower = targetUser.followers.some((e) =>
+      e.equals(this._id),
+    )
+    if (isIncludeFollowing || isIncludeFollower)
+      throw new AlreadyFollowingException()
+    this.followings.push(targetUser._id)
+    targetUser.followers.push(this._id)
+  }
+  async unFollow(targetUser: User) {
+    this.followings = this.followings.filter((id) => {
+      id !== targetUser._id
+    })
+    targetUser.followers = targetUser.followers.filter((id) => {
+      id !== this._id
+    })
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
