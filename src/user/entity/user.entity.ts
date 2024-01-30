@@ -8,8 +8,9 @@ import {
   MinLength,
 } from "class-validator"
 import { AbstractDocument } from "src/common/abstract.schema"
-import { FlattenMaps, Require_id, Types } from "mongoose"
-import { plainToClass, plainToClassFromExist, plainToInstance, TransformPlainToInstance } from "class-transformer"
+import { Types } from "mongoose"
+import { AlreadyFollowingException } from "src/follow/already-following.exception"
+import { InternalServerErrorException } from "@nestjs/common"
 
 @Schema({ timestamps: true })
 export class User extends AbstractDocument {
@@ -61,32 +62,32 @@ export class User extends AbstractDocument {
   @Prop({ required: false, default: null })
   profileImage?: string
 
-  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  @Prop([{ type: Array<Types.ObjectId>, ref: "User" }])
   followers: Types.ObjectId[]
 
-  @Prop([{ type: Types.ObjectId, ref: "User" }])
+  @Prop([{ type: Array<Types.ObjectId>, ref: "User" }])
   followings: Types.ObjectId[]
 
-  addFollower(followerId: Types.ObjectId) {
-    const isInclude = this.followers.includes(followerId)
-    if (!isInclude) this.followers.push(followerId)
-    return
-  }
-  removeFollower(followerId: Types.ObjectId) {
-    this.followers = this.followers.filter((id) => id !== followerId)
-  }
-  addFollowing(followingId: Types.ObjectId) {
-    const isInclude = this.followings.includes(followingId)
-    if (!isInclude) this.followings.push(followingId)
-    return
-  }
-  removeFollowing(followingId: Types.ObjectId) {
-    this.followings = this.followings.filter((id) => id !== followingId)
-  }
-
   async follow(targetUser: User) {
+    const isIncludeFollowing = this.followings.some((e) =>
+      e.equals(targetUser._id),
+    )
+
+    const isIncludeFollower = targetUser.followers.some((e) =>
+      e.equals(this._id),
+    )
+    if (isIncludeFollowing || isIncludeFollower)
+      throw new AlreadyFollowingException()
     this.followings.push(targetUser._id)
     targetUser.followers.push(this._id)
+  }
+  async unFollow(targetUser: User) {
+    this.followings = this.followings.filter((id) => {
+      id !== targetUser._id
+    })
+    targetUser.followers = targetUser.followers.filter((id) => {
+      id !== this._id
+    })
   }
 }
 

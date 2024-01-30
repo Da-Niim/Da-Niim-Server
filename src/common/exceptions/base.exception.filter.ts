@@ -3,10 +3,11 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  InternalServerErrorException,
+  HttpStatus,
 } from "@nestjs/common"
 import { Request, Response } from "express"
 import { BaseException } from "./base.exception"
+import { ErrorCode } from "./error-code.enum"
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -21,7 +22,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       )
     ) {
       console.log(`exception: ${exception}`)
-      throw new InternalServerErrorException("Uncatchable Error.")
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        timestamp: new Date(),
+        errorCode: ErrorCode.Unknown,
+        path: req.url,
+        detail: "알 수 없는 오류가 발생했습니다.",
+      })
     }
 
     const response = (exception as BaseException).getResponse()

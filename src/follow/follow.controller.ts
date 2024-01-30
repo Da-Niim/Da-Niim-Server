@@ -13,18 +13,18 @@ export class FollowController {
     return await this.followService.followUser(data, requestDto)
   }
 
-  // @Post("/cancel")
-  // @UseGuards(BearerTokenGuard)
-  // unFollowUser(@Body() data: FollowDto, @Req() requestDto: Request) {
-  //   try {
-  //     return this.followService.unFollowUser(data, requestDto)
-  //   } catch (error) {
-  //     return error
-  //   }
-  // }
-  // @Get("/")
-  // @UseGuards(BearerTokenGuard)
-  // getFollowList(@Req() requestDto: Request) {
-  //   return this.followService.getFollowList(requestDto)
-  // }
+  @Post("/cancel")
+  @UseGuards(BearerTokenGuard)
+  unFollowUser(@Body() data: FollowDto, @Req() requestDto: Request) {
+    try {
+      return this.followService.unFollowUser(data, requestDto)
+    } catch (error) {
+      return error
+    }
+  }
+  @Get("/")
+  @UseGuards(BearerTokenGuard)
+  getFollowList(@Req() requestDto: Request) {
+    return this.followService.getFollowList(requestDto)
+  }
 }

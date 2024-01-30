@@ -3,7 +3,6 @@ import { InjectConnection, InjectModel } from "@nestjs/mongoose"
 import { Connection, Model, Types } from "mongoose"
 import { User } from "../entity/user.entity"
 import { AbstractRepository } from "src/common/abstract.repository"
-import { plainToInstance } from "class-transformer"
 
 @Injectable()
 export class UserRepository extends AbstractRepository<User> {
@@ -61,22 +60,5 @@ export class UserRepository extends AbstractRepository<User> {
 
   async deleteUser(userId: string): Promise<any> {
     return this.userModel.findByIdAndRemove(userId).exec()
-  }
-
-  async getFollowings(userId: Types.ObjectId): Promise<Types.ObjectId[]> {
-    const user = await this.userModel
-      .findById(userId)
-      .populate("followings")
-      .exec()
-
-    return user.followings
-  }
-  async getFollowers(userId: Types.ObjectId): Promise<Types.ObjectId[]> {
-    const user = await this.userModel
-      .findById(userId)
-      .populate("followers")
-      .exec()
-
-    return user.followers
   }
 }
