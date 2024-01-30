@@ -71,7 +71,7 @@ export class FeedService {
   }
 
   async addComment(cmd: AddCommentCommand) {
-    const feed = Feed.fromQueryResult(
+    const feed = await Feed.fromQueryResult(
       await this.feedRepository.getOne({ _id: cmd.feedId }),
     )
     const comment = feed.addComment(cmd.content, cmd.userId)
