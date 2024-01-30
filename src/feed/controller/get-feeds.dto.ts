@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { throws } from "assert";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
@@ -28,14 +29,23 @@ export class GetFeedRequest extends PaginationRequest {
 }
 
 export class GetFeedResponse {
+    @ApiProperty()
     user: GetFeedResponseUser
+    @ApiProperty()
     id: Types.ObjectId
+    @ApiProperty()
     photoUrls: string[]
+    @ApiProperty()
     title: string
+    @ApiProperty()
     tags: string[]
+    @ApiProperty()
     likeCount: number 
+    @ApiProperty()
     commentCount: number
+    @ApiProperty()
     like: boolean
+    @ApiProperty()
     best: boolean
 
     constructor(props: GetFeedResponse) {

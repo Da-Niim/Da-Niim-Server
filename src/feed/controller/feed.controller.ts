@@ -25,11 +25,12 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiHeader,
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger"
-import { GetFeedRequest } from "./get-feeds.dto"
+import { GetFeedRequest, GetFeedResponse } from "./get-feeds.dto"
 import { PostFeedRequest } from "./post-feed.dto"
 
 @Controller("feeds")
@@ -64,6 +65,8 @@ export class FeedController {
 
   @Get()
   @UseGuards(BearerTokenGuard)
+  @ApiBearerAuth("access-token")
+  @ApiCreatedResponse({description: "Success", type: GetFeedResponse})
   async getFeeds(@Query() query: GetFeedRequest, @Req() req: Request) {
     return await this.feedService.getFeeds(await query.toCommand(req.user._id))
   }

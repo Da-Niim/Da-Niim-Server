@@ -40,14 +40,14 @@ export class FeedService {
     return saved._id.toString()
   }
 
-  async getFeeds(cmd: GetFeedCommand) {
+  async getFeeds(cmd: GetFeedCommand): Promise<GetFeedResponse[]> {
     const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, null)
     const totalElements = await this.feedRepository.count(null)
     const user = await this.userRepository.findOne({_id: cmd.userId})
     const likes = await this.feedLikeRepository.find({userId: cmd.userId, feedId: { $in: feeds.map((feed) => feed._id)}})
     const commentCount = await this.feedCommentRepository.count({feedId: {$in: feeds.map((feed) => feed._id)}})
 
-    return GetFeedResponse.of(feeds, user, likes, false, commentCount)
+    return await GetFeedResponse.of(feeds, user, likes, false, commentCount)
   }
 
   async likeFeed(userId: Types.ObjectId, feedId: Types.ObjectId) {
