@@ -1,8 +1,12 @@
 export enum ErrorCode {
-  FileMimeTypeNotAcceptable = "3000",
-  NotFound = "1000",
-  IllegalArgument = "1002",
+  //common
+  NotFound = "0000",
+  IllegalArgument = "0002",
+  FileMimeTypeNotAcceptable = "0003",
 
-  /** Feed */
-  REQUIRE_IMAGE = "4000"
+  //user
+  AlreadyFollowing = "1005",
+
+  //error
+  Unknown = "9999",
 }

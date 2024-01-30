@@ -1,5 +1,5 @@
-import { Logger, NotFoundException } from "@nestjs/common"
-import { plainToInstance } from "class-transformer"
+import { Logger } from "@nestjs/common"
+import { ClassConstructor, plainToInstance } from "class-transformer"
 import {
   Connection,
   FilterQuery,
@@ -20,6 +20,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   constructor(
     protected readonly model: Model<TDocument>,
     private readonly connection: Connection,
+    private readonly cls: ClassConstructor<TDocument>,
   ) {}
 
   async create(
@@ -102,9 +103,12 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     return this.model.deleteOne(filterQuery, {})
   }
 
-  async stratTransaction() {
-    const session = await this.connection.startSession()
-    session.startTransaction()
-    return session
+  async mapToDomain<TDocument extends AbstractDocument>(
+    cls: ClassConstructor<TDocument>,
+    documentObject: any,
+  ): Promise<TDocument> {
+    const domainObject = plainToInstance(cls, documentObject)
+    domainObject._id = documentObject._id
+    return domainObject
   }
 }

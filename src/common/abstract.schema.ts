@@ -1,4 +1,5 @@
 import { Prop, Schema } from "@nestjs/mongoose"
+import { Exclude } from "class-transformer"
 import { SchemaTypes, Types } from "mongoose"
 
 @Schema()

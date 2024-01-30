@@ -55,6 +55,7 @@ export class AuthService {
     const [userId, password] = decoded.split(":")
     return { userId, password }
   }
+
   verifyToken(token: string) {
     try {
       return this.jwtService.verify(token, {
@@ -87,6 +88,7 @@ export class AuthService {
     }
     return this.signToken({ ...decoded }, isRefreshToken)
   }
+
   issuanceToken(user: Pick<User, "_id" | "userId" | "email">) {
     const accessToken = this.signToken(user, false)
     const refreshToken = this.signToken(user, true)
@@ -95,8 +97,10 @@ export class AuthService {
       refreshToken,
     }
   }
+
   async loginUser(user: UserLoginDto) {
     const existUser = await this.userRepository.findOneUser(user.userId)
+
     if (!existUser) throw new BadRequestException("존재하지 않는 아이디입니다.")
     const isOk = await this.authenticatePassword(
       user.password,
