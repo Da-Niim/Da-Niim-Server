@@ -9,7 +9,7 @@ import {
 } from "class-validator"
 import { AbstractDocument } from "src/common/abstract.schema"
 import { FlattenMaps, Require_id, Types } from "mongoose"
-import { plainToInstance } from "class-transformer"
+import { plainToClass, plainToClassFromExist, plainToInstance, TransformPlainToInstance } from "class-transformer"
 
 @Schema({ timestamps: true })
 export class User extends AbstractDocument {
@@ -84,11 +84,9 @@ export class User extends AbstractDocument {
     this.followings = this.followings.filter((id) => id !== followingId)
   }
 
-  static async mapToDomain(
-    result: FlattenMaps<User> & Require_id<{ _id: Types.ObjectId }>,
-  ) {
-    const user = plainToInstance(User, result)
-    return user
+  async follow(targetUser: User) {
+    this.followings.push(targetUser._id)
+    targetUser.followers.push(this._id)
   }
 }
 

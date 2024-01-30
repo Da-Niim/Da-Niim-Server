@@ -3,6 +3,7 @@ import { InjectConnection, InjectModel } from "@nestjs/mongoose"
 import { Connection, Model, Types } from "mongoose"
 import { User } from "../entity/user.entity"
 import { AbstractRepository } from "src/common/abstract.repository"
+import { plainToInstance } from "class-transformer"
 
 @Injectable()
 export class UserRepository extends AbstractRepository<User> {
@@ -12,7 +13,7 @@ export class UserRepository extends AbstractRepository<User> {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectConnection() connection: Connection,
   ) {
-    super(userModel, connection)
+    super(userModel, connection, User)
     this.logger = new Logger(UserRepository.name)
   }
 
@@ -77,46 +78,5 @@ export class UserRepository extends AbstractRepository<User> {
       .exec()
 
     return user.followers
-  }
-  async follow(
-    userId: Types.ObjectId,
-    targetUserId: Types.ObjectId,
-  ): Promise<boolean> {
-    try {
-      const targetUser = await User.mapToDomain(
-        await this.userModel.findOne({
-          _id: targetUserId,
-        }),
-      )
-      const currentUser = await User.mapToDomain(
-        await this.userModel.findOne({ _id: userId }),
-      )
-      targetUser.addFollower(currentUser._id)
-      currentUser.addFollowing(targetUserId)
-      this.upsert({ _id: targetUser._id }, targetUser)
-      this.upsert({ _id: userId }, currentUser)
-      return true
-    } catch (error) {
-      return false
-    }
-  }
-
-  async unFollow(
-    userId: Types.ObjectId,
-    targetUserId: Types.ObjectId,
-  ): Promise<boolean> {
-    try {
-      const targetUser = await this.userModel.findOne({
-        _id: targetUserId,
-      })
-      targetUser.removeFollower(userId)
-      const currentUser = await this.userModel.findOne({ _id: userId })
-      currentUser.removeFollowing(targetUserId)
-      this.upsert({ _id: targetUser._id }, targetUser)
-      this.upsert({ _id: userId }, currentUser)
-      return true
-    } catch (error) {
-      return false
-    }
   }
 }

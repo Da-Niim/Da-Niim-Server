@@ -1,4 +1,5 @@
 import { Logger } from "@nestjs/common"
+import { ClassConstructor, plainToInstance } from "class-transformer"
 import {
   Connection,
   FilterQuery,
@@ -16,6 +17,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   constructor(
     protected readonly model: Model<TDocument>,
     private readonly connection: Connection,
+    private readonly cls: ClassConstructor<TDocument>
   ) {}
 
   async create(
@@ -33,8 +35,8 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   }
 
   async findOne(filterQuery: FilterQuery<TDocument>) {
-    const document = await this.model.findOne(filterQuery, {}, { lean: true })
-    return document
+    const document = await this.model.findOne(filterQuery, {}, {lean: true})
+    return await this.mapToDomain(this.cls, document)
   }
 
   async getOne(filterQuery: FilterQuery<TDocument>) {
@@ -82,5 +84,11 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async delete(filterQuery: FilterQuery<TDocument>) {
     return this.model.deleteOne(filterQuery, {})
+  }
+
+  async mapToDomain<TDocument extends AbstractDocument>(cls: ClassConstructor<TDocument>, documentObject: any): Promise<TDocument> {
+    const domainObject = plainToInstance(cls, documentObject)
+    domainObject._id = documentObject._id
+    return domainObject
   }
 }
