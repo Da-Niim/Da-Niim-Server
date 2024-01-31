@@ -7,6 +7,9 @@ export enum ErrorCode {
   //user
   AlreadyFollowing = "1005",
 
+  //feed
+  RequireImage = "2000",
+
   //error
   Unknown = "9999",
 }

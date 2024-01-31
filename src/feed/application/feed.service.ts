@@ -51,8 +51,7 @@ export class FeedService {
   }
 
   async likeFeed(userId: Types.ObjectId, feedId: Types.ObjectId) {
-    const feed = await this.feedRepository.getOne({ _id: feedId })
-
+    const feed = new Feed(await this.feedRepository.getOne({ _id: feedId }))
     const feedLike = await this.feedLikeRepository.findOne({
       userId: userId,
       feedId: feedId,
@@ -69,7 +68,7 @@ export class FeedService {
   }
 
   async addComment(cmd: AddCommentCommand) {
-    const feed = await this.feedRepository.getOne({ _id: cmd.feedId })
+    const feed = new Feed(await this.feedRepository.getOne({ _id: cmd.feedId }))
 
     const comment = feed.addComment(cmd.content, cmd.userId)
 
@@ -77,9 +76,9 @@ export class FeedService {
   }
 
   async addSubComment(cmd: AddSubCommentCommand) {
-    const comment = await this.feedCommentRepository.getOne({
+    const comment = new FeedComment(await this.feedCommentRepository.getOne({
       _id: cmd.commentId,
-    })
+    }))
     const subComment = comment.addSubComment(cmd.userId, cmd.content)
 
     await this.feedCommentRepository.create(subComment)

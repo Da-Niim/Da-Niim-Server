@@ -33,9 +33,10 @@ export class Feed extends AbstractDocument {
   @Prop({ type: Number, required: true })
   likeCount: number
 
-  constructor(feedProps: Omit<Feed, keyof typeof Feed.prototype>) {
+  constructor(feedProps: Partial<Feed>) {
     super()
     Object.assign(this, feedProps)
+    this._id = feedProps._id
   }
 
   static async create(
@@ -65,6 +66,7 @@ export class Feed extends AbstractDocument {
     }
 
     return new Feed({
+      _id: null,
       userId: userId,
       title: title,
       photos: photos,
@@ -78,12 +80,6 @@ export class Feed extends AbstractDocument {
     })
   }
 
-  static async fromQueryResult(
-    result: FlattenMaps<Feed> & Require_id<{ _id: Types.ObjectId }>,
-  ): Promise<Feed> {
-    return plainToInstance(Feed, result)
-  }
-
   addLike(userId: Types.ObjectId): FeedLike {
     this.likeCount += 1
     return new FeedLike(this._id, userId)
@@ -94,7 +90,12 @@ export class Feed extends AbstractDocument {
   }
 
   addComment(content: string, userId: Types.ObjectId): FeedComment {
-    return new FeedComment(userId, this._id, content, null)
+    return new FeedComment({
+      userId: userId,
+      feedId: this._id,
+      content: content,
+      likeCount: 0
+    })
   }
 }
 

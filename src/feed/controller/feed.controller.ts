@@ -77,7 +77,6 @@ export class FeedController {
   @ApiParam({ name: "id", description: "피드 ID" })
   async likeFeed(@Param("id") id: string, @Req() req: Request) {
     const user: User = req.user
-    console.log(user._id)
     await this.feedService.likeFeed(user._id, new Types.ObjectId(id))
   }
 

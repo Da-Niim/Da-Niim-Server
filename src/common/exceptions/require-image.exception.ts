@@ -5,7 +5,7 @@ import { ErrorCode } from "./error-code.enum";
 export class RequireImageException extends BaseException {
     constructor() {
         super(
-            ErrorCode.REQUIRE_IMAGE,
+            ErrorCode.RequireImage,
             HttpStatus.BAD_REQUEST,
             "",
             "이미지는 필수 항목입니다."
