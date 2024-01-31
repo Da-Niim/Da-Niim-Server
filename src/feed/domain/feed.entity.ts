@@ -73,7 +73,7 @@ export class Feed extends AbstractDocument {
       date: date,
       location: location,
       numOfPeople: numOfPeople,
-      likeCount: 1,
+      likeCount: 0,
       expenses: expenses,
     })
   }
