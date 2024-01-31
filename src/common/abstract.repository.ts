@@ -39,7 +39,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async findOne(filterQuery: FilterQuery<TDocument>) {
     const document = await this.model.findOne(filterQuery, {}, { lean: true })
-    return document
+    return await this.mapToDomain(this.cls, document)
   }
 
   async getOne(filterQuery: FilterQuery<TDocument>) {
@@ -50,7 +50,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       throw new DocumentNotFoundException("Document not found.")
     }
 
-    return document
+    return await this.mapToDomain(this.cls, document)
   }
 
   async findOneAndUpdate(
