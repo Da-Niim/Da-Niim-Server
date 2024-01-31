@@ -23,45 +23,19 @@ export class FeedComment extends AbstractDocument {
   @Prop({ type: Number, required: true })
   likeCount: number
 
-  constructor(
-    userId: Types.ObjectId,
-    feedId: Types.ObjectId,
-    content: string,
-    parentId?: Types.ObjectId,
-  ) {
+  constructor(feedCommentProps: Partial<FeedComment>) {
     super()
-    this.feedId = feedId
-    this.userId = userId
-    this.content = content
-    this.likeCount = 0
-    this.parentId = parentId
-  }
-
-  static fromQueryResult(
-    result: FlattenMaps<FeedComment> & Require_id<{ _id: Types.ObjectId }>,
-  ): FeedComment {
-    const feedCommentEntity = new FeedComment(
-      result.userId,
-      result.feedId,
-      result.content,
-      result.parentId,
-    )
-    feedCommentEntity._id = result._id
-
-    return feedCommentEntity
-  }
-
-  static create(
-    userId: Types.ObjectId,
-    feedId: Types.ObjectId,
-    content: string,
-  ): FeedComment {
-    console.log("Create Feed Comment")
-    return new FeedComment(userId, feedId, content, null)
+    Object.assign(this, feedCommentProps)
   }
 
   addSubComment(userId: Types.ObjectId, content: string): FeedComment {
-    return new FeedComment(userId, this.feedId, content, this._id)
+    return new FeedComment({
+      userId: userId, 
+      feedId: this.feedId, 
+      content: content, 
+      parentId: this._id,
+      likeCount: 0
+    })
   }
 }
 

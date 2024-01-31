@@ -1,4 +1,4 @@
-import { Photo } from "src/common/photo.model"
+import { Photo } from "src/feed/domain/photo.model"
 import { Readable } from "stream"
 
 describe("Photo Model", () => {

@@ -1,6 +1,6 @@
 import { ArgumentMetadata, ValidationPipe } from "@nestjs/common"
 import { generate } from "randomstring"
-import { FeedPostRequest } from "src/feed/feed-post.dto"
+import { FeedPostRequest } from "src/feed/controller/post-feed.dto"
 
 describe("FeedPostDto", () => {
   let validationPipe: ValidationPipe

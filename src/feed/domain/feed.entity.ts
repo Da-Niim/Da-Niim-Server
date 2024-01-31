@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { plainToInstance } from "class-transformer"
 import { FlattenMaps, HydratedDocument, Require_id, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
-import { Photo } from "../../common/photo.model"
 import { Location } from "../location.type"
 import { AddressResolver } from "./address-resolver.service"
 import { FeedComment } from "./feed-comment.entity"
 import { FeedLike } from "./feed-like.entity"
+import { Photo } from "./photo.model"
 
 export type FeedDocument = HydratedDocument<Feed>
 
@@ -23,40 +24,19 @@ export class Feed extends AbstractDocument {
   tag: string[]
   @Prop({ required: true })
   date: string
-  @Prop({ type: Object })
-  location: Location
-  @Prop({ required: true })
-  numOfPeople: number
-  @Prop()
+  @Prop({ type: Object, required: false })
+  location?: Location
+  @Prop({ required: false })
+  numOfPeople?: number
+  @Prop({required: false})
   expenses?: number
   @Prop({ type: Number, required: true })
   likeCount: number
 
-  constructor(
-    userId: Types.ObjectId,
-    title: string,
-    photos: Photo[],
-    content: string,
-    tag: string[],
-    date: string,
-    location: Location,
-    numOfPeople: number,
-    likeCount: number,
-    _id?: Types.ObjectId,
-    expenses?: number,
-  ) {
+  constructor(feedProps: Partial<Feed>) {
     super()
-    this._id = _id
-    this.userId = userId
-    this.title = title
-    this.photos = photos
-    this.content = content
-    this.tag = tag
-    this.date = date
-    this.location = location
-    this.numOfPeople = numOfPeople
-    this.expenses = expenses
-    this.likeCount = likeCount
+    Object.assign(this, feedProps)
+    this._id = feedProps._id
   }
 
   static async create(
@@ -66,15 +46,15 @@ export class Feed extends AbstractDocument {
     tag: string[],
     date: string,
     numOfPeople: number = 1,
-    likeCount: number,
     addressResolver: AddressResolver,
     files: Express.Multer.File[],
     expenses?: number,
   ): Promise<Feed> {
     let location: Location
+    let photos = await Photo.of(files)
 
-    if (files.length > 0) {
-      const coord = addressResolver.resolveCoord(files[0])
+    if (files && files.length > 0) {
+      const coord = await addressResolver.resolveCoord(files[0])
 
       location = {
         name: await addressResolver.resolveAddress(coord),
@@ -85,40 +65,19 @@ export class Feed extends AbstractDocument {
       }
     }
 
-    return new Feed(
-      userId,
-      title,
-      Photo.of(files),
-      content,
-      tag,
-      date,
-      location,
-      numOfPeople,
-      likeCount,
-      null,
-      expenses,
-    )
-  }
-
-  static fromQueryResult(
-    result: FlattenMaps<Feed> & Require_id<{ _id: Types.ObjectId }>,
-  ): Feed {
-    const feedEntity = new Feed(
-      result.userId,
-      result.title,
-      result.photos,
-      result.content,
-      result.tag,
-      result.date,
-      result.location,
-      result.numOfPeople,
-      result.likeCount,
-      result._id,
-      result.expenses,
-    )
-    feedEntity._id = result._id
-
-    return feedEntity
+    return new Feed({
+      _id: null,
+      userId: userId,
+      title: title,
+      photos: photos,
+      content: content,
+      tag: tag,
+      date: date,
+      location: location,
+      numOfPeople: numOfPeople,
+      likeCount: 0,
+      expenses: expenses,
+    })
   }
 
   addLike(userId: Types.ObjectId): FeedLike {
@@ -131,7 +90,12 @@ export class Feed extends AbstractDocument {
   }
 
   addComment(content: string, userId: Types.ObjectId): FeedComment {
-    return new FeedComment(userId, this._id, content, null)
+    return new FeedComment({
+      userId: userId,
+      feedId: this._id,
+      content: content,
+      likeCount: 0
+    })
   }
 }
 

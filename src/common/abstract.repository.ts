@@ -3,11 +3,14 @@ import { ClassConstructor, plainToInstance } from "class-transformer"
 import {
   Connection,
   FilterQuery,
+  FlattenMaps,
   Model,
+  Require_id,
   SaveOptions,
   Types,
   UpdateQuery,
 } from "mongoose"
+import { filter } from "rxjs"
 import { AbstractDocument } from "./abstract.schema"
 import { DocumentNotFoundException } from "./exceptions/not-found.exception"
 
@@ -80,6 +83,20 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async find(filterQuery: FilterQuery<TDocument>) {
     return this.model.find(filterQuery, {}, { lean: true })
+  }
+  
+  async findWithPagination(page: number, size: number, filterQuery: FilterQuery<TDocument>) {
+    return this.model.find(filterQuery, {}, { lean: true})
+    .limit(size)
+    .skip(page * size)
+  }
+
+  async count(filterQuery: FilterQuery<TDocument>) {
+    return this.model.countDocuments(filterQuery)
+  }
+
+  async exists(filterQuery: FilterQuery<TDocument>) {
+    return this.model.exists(filterQuery)
   }
 
   async delete(filterQuery: FilterQuery<TDocument>) {
