@@ -1,11 +1,6 @@
-import * as path from "path"
-import * as fs from "fs"
-
-export class FileUtils {
-    static async loadFile(filename: string): Promise<Buffer> {
-        const baseFilePath = process.env.ATTACHED_FILE_PATH
-        const filePath = path?.resolve(baseFilePath, filename)
-
-        return fs.readFileSync(filePath)
-    }
+export interface FileUtils {
+    getPublicUrl(filename: string, srcDir: string): Promise<string>
+    load(filename: string, srcDir: string): Promise<Blob>
+    save(file: Express.Multer.File, destDir: string): Promise<string>
+    createStoredFileName(originalname: string): string
 }

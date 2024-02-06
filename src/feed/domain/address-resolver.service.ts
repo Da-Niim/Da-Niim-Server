@@ -1,6 +1,6 @@
 import { CoordDto } from "src/common/utils/exif-parser.util"
 
 export interface AddressResolver {
-  resolveCoord(file: Express.Multer.File): Promise<CoordDto>
+  resolveCoord(file: Blob): Promise<CoordDto>
   resolveAddress(coord: CoordDto): Promise<string>
 }

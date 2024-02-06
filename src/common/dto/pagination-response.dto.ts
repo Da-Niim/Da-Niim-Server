@@ -1,7 +1,13 @@
+import { ApiProperty } from "@nestjs/swagger"
+
 export class PaginationResponse<T> {
+    @ApiProperty()
     page: number
+    @ApiProperty()
     size: number
+    @ApiProperty()
     totalElements: number
+    @ApiProperty()
     totalPage: number
     data: T
 
@@ -9,7 +15,7 @@ export class PaginationResponse<T> {
         this.page = page
         this.size = size
         this.totalElements = totalElements
-        this.totalPage = (totalElements / size)
+        this.totalPage = Math.floor(totalElements / size)
         this.data = data
     }
 }

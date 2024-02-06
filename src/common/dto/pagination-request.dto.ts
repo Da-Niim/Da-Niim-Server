@@ -1,4 +1,4 @@
 export class PaginationRequest {
-    page: number
-    size: number
+    page: number = 0
+    size: number = 14
 }

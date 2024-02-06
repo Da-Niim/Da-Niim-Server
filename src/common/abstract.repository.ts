@@ -5,6 +5,7 @@ import {
   FilterQuery,
   FlattenMaps,
   Model,
+  PipelineStage,
   Require_id,
   SaveOptions,
   Types,
@@ -93,6 +94,10 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   async count(filterQuery: FilterQuery<TDocument>) {
     return this.model.countDocuments(filterQuery)
+  }
+
+  async aggregate(pipelines: PipelineStage[]) {
+    return this.model.aggregate(pipelines).exec()
   }
 
   async exists(filterQuery: FilterQuery<TDocument>) {

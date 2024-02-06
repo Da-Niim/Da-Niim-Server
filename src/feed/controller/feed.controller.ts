@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -20,7 +21,7 @@ import { BearerTokenGuard } from "src/auth/guard/bearer-token.guard"
 import { MultiImageFileValidationPipe } from "src/infra/file/file.multiImageFileValidation.pipe"
 import { User } from "src/user/entity/user.entity"
 import { FeedService } from "../application/feed.service"
-import { AddCommentRequest } from "./add-comment.request"
+import { AddCommentRequest } from "./dto/add-comment.request"
 import {
   ApiBearerAuth,
   ApiBody,
@@ -28,15 +29,24 @@ import {
   ApiCreatedResponse,
   ApiHeader,
   ApiParam,
+  ApiResponse,
   ApiTags,
 } from "@nestjs/swagger"
-import { GetFeedRequest, GetFeedResponse } from "./get-feeds.dto"
-import { PostFeedRequest } from "./post-feed.dto"
+import { PostFeedRequest } from "./dto/post-feed.dto"
+import { GetFeedRequest, GetFeedResponse } from "./dto/get-feeds.dto"
+import { FeedLikeService } from "../application/feed-like.service"
+import { FeedCommentService } from "../application/feed-comment.service"
+import { GetProfileFeedRequest, GetProfileFeedResponse } from "./dto/get-profile-feed.dto"
+import { PaginationResponse } from "src/common/dto/pagination-response.dto"
+import { ApiOkResponsePaginated } from "src/common/decorators/api-pagination-response.decorator"
 
 @Controller("feeds")
 @ApiTags("feeds")
 export class FeedController {
-  constructor(private readonly feedService: FeedService) {}
+  constructor(
+    private readonly feedService: FeedService, 
+    private readonly feedLikeService: FeedLikeService, 
+    private readonly feedCommentService: FeedCommentService) {}
 
   @ApiConsumes("multipart/form-data")
   @Post()
@@ -66,9 +76,18 @@ export class FeedController {
   @Get()
   @UseGuards(BearerTokenGuard)
   @ApiBearerAuth("access-token")
-  @ApiCreatedResponse({description: "Success", type: GetFeedResponse})
-  async getFeeds(@Query() query: GetFeedRequest, @Req() req: Request) {
+  @ApiOkResponsePaginated(GetFeedResponse)
+  async getFeeds(@Query() query: GetFeedRequest, @Req() req: Request): Promise<PaginationResponse<GetFeedResponse[]>> {
     return await this.feedService.getFeeds(await query.toCommand(req.user._id))
+  }
+
+  @Get("/profile")
+  @UseGuards(BearerTokenGuard)
+  @ApiBearerAuth("access-token")
+  @ApiOkResponsePaginated(GetProfileFeedResponse)
+  async getProfileFeeds(@Query() query: GetProfileFeedRequest, @Req() req: Request): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
+    const user = req.user
+    return await this.feedService.getProfileFeeds(await query.toCommand(user._id))
   }
 
   @Post(":id/like")
@@ -77,7 +96,17 @@ export class FeedController {
   @ApiParam({ name: "id", description: "피드 ID" })
   async likeFeed(@Param("id") id: string, @Req() req: Request) {
     const user: User = req.user
-    await this.feedService.likeFeed(user._id, new Types.ObjectId(id))
+    await this.feedLikeService.likeFeed(user._id, new Types.ObjectId(id))
+  }
+
+  @Delete(":id/like")
+  @UseGuards(BearerTokenGuard)
+  @ApiBearerAuth("access-token")
+  async cancelFeedLike(@Param("id") id: string, @Req() req: Request) {
+    const user: User = req.user
+    await this.feedLikeService.cancelLikeFeed({
+      userId: user._id, 
+      feedId: new Types.ObjectId(id)})
   }
 
   @Post(":id/comments")
@@ -89,7 +118,7 @@ export class FeedController {
     @Param("id") id: string,
     @Req() req: Request,
   ) {
-    await this.feedService.addComment(
+    await this.feedCommentService.addComment(
       body.toAddCommand(req.user._id, new Types.ObjectId(id)),
     )
   }
@@ -105,7 +134,7 @@ export class FeedController {
     @Param("commentId") commentId: string,
     @Req() req: Request,
   ) {
-    await this.feedService.addSubComment(
+    await this.feedCommentService.addSubComment(
       body.toAddSubCommand(
         req.user._id,
         new Types.ObjectId(id),

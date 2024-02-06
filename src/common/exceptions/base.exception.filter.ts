@@ -21,7 +21,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         exception instanceof BaseException || exception instanceof HttpException
       )
     ) {
-      console.log(`exception: ${exception}`)
+      console.log("exception: ", exception)
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         timestamp: new Date(),
         errorCode: ErrorCode.Unknown,
@@ -32,7 +32,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     const response = (exception as BaseException).getResponse()
 
-    console.log("exception response: " + response)
+    console.log("exception response: ", response)
 
     const log = {
       timestamp: new Date(),
@@ -41,7 +41,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       stack: (exception as HttpException).stack,
     }
 
-    console.log("exception log: " + log)
+    console.log("exception log: ", log)
 
     res.status((exception as BaseException).getStatus()).json({
       timestamp: new Date(),
