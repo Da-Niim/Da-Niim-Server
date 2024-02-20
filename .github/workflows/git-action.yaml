@@ -9,28 +9,35 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      MONGO_URI: ${{ secrets.MONGO_URI }}
-      ATTACHED_FILE_PATH: ${{ secrets.ATTACHED_FILE_PATH }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      HASH_ROUNDS: ${{ secrets.HASH_ROUNDS }}
-      KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+
       - name: Install dependencies
         run: npm install
+
       - name: Build
         run: npm run build
-      - name: Start Server
-        run: npm run start:dev
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd /path/to/your/project
+            git pull origin ${{ github.ref_name }}
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+            echo "ATTACHED_FILE_PATH=${{ secrets.ATTACHED_FILE_PATH }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
+            echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .env
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+            npm install --production
+            npm run build
+            node dist/main.js
