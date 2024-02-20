@@ -1,17 +1,14 @@
 import { Module } from "@nestjs/common"
-import { ConfigModule, ConfigService } from "@nestjs/config"
-import { MongooseModule } from "@nestjs/mongoose"
-import { MongoMemoryServer } from "mongodb-memory-server"
+import { ConfigModule } from "@nestjs/config"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
+import { AuthModule } from "./auth/auth.module"
+import { EventEmitterDynamicModule } from "./common/event-emitter.module"
 import { FeedModule } from "./feed/feed.module"
+import { FollowModule } from "./follow/follow.module"
+import { DatabaseModule } from "./infra/db/db.module"
 import { FileModule } from "./infra/file/file.module"
 import { UserModule } from "./user/user.module"
-import { AuthModule } from "./auth/auth.module"
-import { DatabaseModule } from "./infra/db/db.module"
-import { FollowModule } from "./follow/follow.module"
-import { EventEmitterDynamicModule } from "./common/event-emitter.module"
-import { SupabaseFileUtils } from "./common/utils/supabase-file.manager"
 
 @Module({
   imports: [
@@ -25,9 +22,9 @@ import { SupabaseFileUtils } from "./common/utils/supabase-file.manager"
     UserModule,
     AuthModule,
     FollowModule,
-    EventEmitterDynamicModule
+    EventEmitterDynamicModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {}
