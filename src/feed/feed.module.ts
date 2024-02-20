@@ -14,7 +14,7 @@ import { AddressResolverImpl } from "./infra/address-resolver.service.impl"
 import { FeedLikeService } from "./application/feed-like.service"
 import { FeedCommentService } from "./application/feed-comment.service"
 import { EventEmitterDynamicModule } from "src/common/event-emitter.module"
-import { SupabaseFileUtils } from "src/common/utils/supabase-file.utils"
+import { SupabaseFileUtils } from "src/common/utils/supabase-file.manager"
 
 @Module({
   imports: [

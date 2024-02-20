@@ -3,7 +3,7 @@ import { throws } from "assert";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
 import { PaginationResponse } from "src/common/dto/pagination-response.dto";
-import { FileUtils } from "src/common/utils/file.utils";
+import { FileUtils } from "src/common/utils/file.manager";
 import { ImageEncoder } from "src/common/utils/image-encoder.utils";
 import { GetFeedCommand } from "src/feed/application/command/get-feed.command";
 import { FeedLike } from "src/feed/domain/feed-like.entity";

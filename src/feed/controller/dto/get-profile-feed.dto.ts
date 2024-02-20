@@ -2,7 +2,7 @@ import { targetModulesByContainer } from "@nestjs/core/router/router-module";
 import { ApiProperty } from "@nestjs/swagger";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
-import { FileUtils } from "src/common/utils/file.utils";
+import { FileUtils } from "src/common/utils/file.manager";
 import { ImageEncoder } from "src/common/utils/image-encoder.utils";
 import { GetProfileFeedCommand } from "src/feed/application/command/get-profile-feed.command";
 import { Feed } from "src/feed/domain/feed.entity";

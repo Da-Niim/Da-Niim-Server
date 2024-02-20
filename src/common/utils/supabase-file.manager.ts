@@ -1,14 +1,14 @@
 import * as path from "path"
 import * as fs from "fs"
-import { FileUtils } from "./file.utils"
 import { v4 as uuid } from "uuid"
 import { Injectable } from "@nestjs/common"
 import { createClient } from '@supabase/supabase-js'
 import { FileDownloadException } from "../exceptions/file-download.exception"
+import { FileManager } from "./file.manager"
 
 
 @Injectable()
-export class SupabaseFileUtils implements FileUtils {
+export class SupabaseFileUtils implements FileManager {
  
     private readonly supabaseUrl = 'https://bkaladzoyjtogjraspqj.supabase.co'
     private readonly supabaseKey = process.env.SUPABASE_KEY

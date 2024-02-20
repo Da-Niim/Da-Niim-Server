@@ -20,7 +20,7 @@ import { GetMyPageFeedCommand } from "./command/get-mypage-feed.command"
 import { PostFeedCommand } from "./command/post-feed.command"
 import { GetProfileFeedCommand } from "./command/get-profile-feed.command"
 import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
-import { FileUtils } from "src/common/utils/file.utils"
+import { FileUtils } from "src/common/utils/file.manager"
 
 @Injectable()
 export class FeedService {
