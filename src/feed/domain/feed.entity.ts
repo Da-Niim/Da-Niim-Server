@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { plainToInstance } from "class-transformer"
 import { FlattenMaps, HydratedDocument, Require_id, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
-import { FileUtils } from "src/common/utils/file.manager"
+import { FileManager } from "src/common/utils/file.manager"
 import { Location } from "../location.type"
 import { AddressResolver } from "./address-resolver.service"
 import { FeedComment } from "./feed-comment.entity"
@@ -50,16 +50,16 @@ export class Feed extends AbstractDocument {
     date: string,
     numOfPeople: number,
     addressResolver: AddressResolver,
-    fileUtils: FileUtils,
+    fileManager: FileManager,
     files: Express.Multer.File[],
     expenses?: number
   }): Promise<Feed> {
     let location: Location
-    let photos = await Photo.of("feed", data.files, data.fileUtils)
+    let photos = await Photo.of("feed", data.files, data.fileManager)
 
     if (data.files && data.files.length > 0) {
       console.log("storedFilenName: ", photos[0].storedFileName)
-      const photo = await data.fileUtils.load(photos[0].storedFileName, "feed")
+      const photo = await data.fileManager.load(photos[0].storedFileName, "feed")
       const coord = await data.addressResolver.resolveCoord(photo)
 
       location = {

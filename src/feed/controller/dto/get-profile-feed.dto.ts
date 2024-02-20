@@ -2,7 +2,7 @@ import { targetModulesByContainer } from "@nestjs/core/router/router-module";
 import { ApiProperty } from "@nestjs/swagger";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
-import { FileUtils } from "src/common/utils/file.manager";
+import { FileManager } from "src/common/utils/file.manager";
 import { ImageEncoder } from "src/common/utils/image-encoder.utils";
 import { GetProfileFeedCommand } from "src/feed/application/command/get-profile-feed.command";
 import { Feed } from "src/feed/domain/feed.entity";
@@ -39,11 +39,11 @@ export class GetProfileFeedResponse {
         this.commentCount = data.commentCount
     }
 
-    static async of(feeds: Feed[], fileUtils: FileUtils): Promise<GetProfileFeedResponse[]> {
+    static async of(feeds: Feed[], fileManager: FileManager): Promise<GetProfileFeedResponse[]> {
         return Promise.all(feeds.map(async (feed) => {
             return new GetProfileFeedResponse({
                 id: feed._id,
-                photoUrl: await fileUtils.getPublicUrl(feed.photos[0].storedFileName, "feed"),
+                photoUrl: await fileManager.getPublicUrl(feed.photos[0].storedFileName, "feed"),
                 likeCount: feed.likeCount,
                 commentCount: feed.commentCount
             })

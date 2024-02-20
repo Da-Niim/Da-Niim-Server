@@ -1,7 +1,6 @@
 import * as path from "path"
 import * as fs from "fs"
 import { ExifParserFactory } from "ts-exif-parser"
-import { FileUtils } from "./file.manager"
 
 export class ExifParser {
   static async parseCoordFromFile(file: Blob): Promise<CoordDto> {

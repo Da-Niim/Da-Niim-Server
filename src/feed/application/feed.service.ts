@@ -20,7 +20,7 @@ import { GetMyPageFeedCommand } from "./command/get-mypage-feed.command"
 import { PostFeedCommand } from "./command/post-feed.command"
 import { GetProfileFeedCommand } from "./command/get-profile-feed.command"
 import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
-import { FileUtils } from "src/common/utils/file.manager"
+import { FileManager } from "src/common/utils/file.manager"
 
 @Injectable()
 export class FeedService {
@@ -29,7 +29,7 @@ export class FeedService {
     private readonly feedLikeRepository: FeedLikeRepository,
     private readonly feedCommentRepository: FeedCommentRepository,
     private readonly userRepository: UserRepository,
-    @Inject("fileUtilsImpl") private readonly fileUtils: FileUtils,
+    @Inject("fileUtilsImpl") private readonly fileManager: FileManager,
     @Inject("addressResolverImpl") private readonly addressResolver: AddressResolver,
   ) {}
 
@@ -42,7 +42,7 @@ export class FeedService {
       date: cmd.date,
       numOfPeople: cmd.numOfPeople,
       addressResolver: this.addressResolver,
-      fileUtils: this.fileUtils,
+      fileManager: this.fileManager,
       files: cmd.files,
       expenses: cmd.expenses,
     })
@@ -61,7 +61,7 @@ export class FeedService {
       cmd.page,
       cmd.size,
       totalElements,
-      await GetFeedResponse.of(feeds, user, likes, false, this.fileUtils, [])
+      await GetFeedResponse.of(feeds, user, likes, false, this.fileManager, [])
     )
   }
 
@@ -74,7 +74,7 @@ export class FeedService {
       cmd.page,
       cmd.size,
       totalElements,
-      await GetProfileFeedResponse.of(feeds, this.fileUtils)
+      await GetProfileFeedResponse.of(feeds, this.fileManager)
     )
   }
 
