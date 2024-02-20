@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            cd /path/to/your/project
+            cd ./Da-Niim-Server
             git pull origin ${{ github.ref_name }}
             echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
             echo "ATTACHED_FILE_PATH=${{ secrets.ATTACHED_FILE_PATH }}" >> .env
