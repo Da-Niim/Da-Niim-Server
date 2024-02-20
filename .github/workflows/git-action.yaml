@@ -33,6 +33,6 @@ jobs:
             echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
             echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .env
             echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
-            npm install --production
-            npm run build
-            node dist/main.js
+            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm install
+            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm run build
+            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/node dist/main.js

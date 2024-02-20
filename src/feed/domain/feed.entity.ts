@@ -1,12 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { plainToInstance } from "class-transformer"
-import { FlattenMaps, HydratedDocument, Require_id, Types } from "mongoose"
+import { HydratedDocument, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
 import { FileManager } from "src/common/utils/file.manager"
 import { Location } from "../location.type"
 import { AddressResolver } from "./address-resolver.service"
-import { FeedComment } from "./feed-comment.entity"
-import { FeedLike } from "./feed-like.entity"
 import { Photo } from "./photo.model"
 
 export type FeedDocument = HydratedDocument<Feed>
@@ -29,7 +26,7 @@ export class Feed extends AbstractDocument {
   location?: Location
   @Prop({ required: false })
   numOfPeople?: number
-  @Prop({required: false})
+  @Prop({ required: false })
   expenses?: number
   @Prop({ type: Number, required: true })
   likeCount: number
@@ -43,23 +40,26 @@ export class Feed extends AbstractDocument {
   }
 
   static async create(data: {
-    userId: Types.ObjectId,
-    title: string,
-    content: string,
-    tag: string[],
-    date: string,
-    numOfPeople: number,
-    addressResolver: AddressResolver,
-    fileManager: FileManager,
-    files: Express.Multer.File[],
+    userId: Types.ObjectId
+    title: string
+    content: string
+    tag: string[]
+    date: string
+    numOfPeople: number
+    addressResolver: AddressResolver
+    fileManager: FileManager
+    files: Express.Multer.File[]
     expenses?: number
   }): Promise<Feed> {
     let location: Location
-    let photos = await Photo.of("feed", data.files, data.fileManager)
+    const photos = await Photo.of("feed", data.files, data.fileManager)
 
     if (data.files && data.files.length > 0) {
       console.log("storedFilenName: ", photos[0].storedFileName)
-      const photo = await data.fileManager.load(photos[0].storedFileName, "feed")
+      const photo = await data.fileManager.load(
+        photos[0].storedFileName,
+        "feed",
+      )
       const coord = await data.addressResolver.resolveCoord(photo)
 
       location = {
