@@ -10,6 +10,8 @@ import { UserModule } from "./user/user.module"
 import { AuthModule } from "./auth/auth.module"
 import { DatabaseModule } from "./infra/db/db.module"
 import { FollowModule } from "./follow/follow.module"
+import { EventEmitterDynamicModule } from "./common/event-emitter.module"
+import { SupabaseFileUtils } from "./common/utils/supabase-file.manager"
 
 @Module({
   imports: [
@@ -23,8 +25,9 @@ import { FollowModule } from "./follow/follow.module"
     UserModule,
     AuthModule,
     FollowModule,
+    EventEmitterDynamicModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

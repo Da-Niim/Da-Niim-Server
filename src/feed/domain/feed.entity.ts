@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { plainToInstance } from "class-transformer"
 import { FlattenMaps, HydratedDocument, Require_id, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
+import { FileUtils } from "src/common/utils/file.manager"
 import { Location } from "../location.type"
 import { AddressResolver } from "./address-resolver.service"
 import { FeedComment } from "./feed-comment.entity"
@@ -32,6 +33,8 @@ export class Feed extends AbstractDocument {
   expenses?: number
   @Prop({ type: Number, required: true })
   likeCount: number
+  @Prop({ type: Number, required: true })
+  commentCount: number
 
   constructor(feedProps: Partial<Feed>) {
     super()
@@ -39,25 +42,28 @@ export class Feed extends AbstractDocument {
     this._id = feedProps._id
   }
 
-  static async create(
+  static async create(data: {
     userId: Types.ObjectId,
     title: string,
     content: string,
     tag: string[],
     date: string,
-    numOfPeople: number = 1,
+    numOfPeople: number,
     addressResolver: AddressResolver,
+    fileUtils: FileUtils,
     files: Express.Multer.File[],
-    expenses?: number,
-  ): Promise<Feed> {
+    expenses?: number
+  }): Promise<Feed> {
     let location: Location
-    let photos = await Photo.of(files)
+    let photos = await Photo.of("feed", data.files, data.fileUtils)
 
-    if (files && files.length > 0) {
-      const coord = await addressResolver.resolveCoord(files[0])
+    if (data.files && data.files.length > 0) {
+      console.log("storedFilenName: ", photos[0].storedFileName)
+      const photo = await data.fileUtils.load(photos[0].storedFileName, "feed")
+      const coord = await data.addressResolver.resolveCoord(photo)
 
       location = {
-        name: await addressResolver.resolveAddress(coord),
+        name: await data.addressResolver.resolveAddress(coord),
         coord: {
           lng: coord.lng,
           lat: coord.lat,
@@ -67,35 +73,34 @@ export class Feed extends AbstractDocument {
 
     return new Feed({
       _id: null,
-      userId: userId,
-      title: title,
+      userId: data.userId,
+      title: data.title,
       photos: photos,
-      content: content,
-      tag: tag,
-      date: date,
+      content: data.content,
+      tag: data.tag,
+      date: data.date,
       location: location,
-      numOfPeople: numOfPeople,
+      numOfPeople: data.numOfPeople,
       likeCount: 0,
-      expenses: expenses,
+      commentCount: 0,
+      expenses: data.expenses,
     })
   }
 
-  addLike(userId: Types.ObjectId): FeedLike {
-    this.likeCount += 1
-    return new FeedLike(this._id, userId)
+  like() {
+    this.likeCount++
   }
 
-  retractLike() {
-    this.likeCount -= 1
+  cancelLike() {
+    this.likeCount--
   }
 
-  addComment(content: string, userId: Types.ObjectId): FeedComment {
-    return new FeedComment({
-      userId: userId,
-      feedId: this._id,
-      content: content,
-      likeCount: 0
-    })
+  addComment() {
+    this.commentCount++
+  }
+
+  deleteComment() {
+    this.commentCount--
   }
 }
 

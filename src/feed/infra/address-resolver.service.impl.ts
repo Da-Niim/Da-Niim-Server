@@ -5,8 +5,8 @@ import { AddressResolver } from "../domain/address-resolver.service"
 
 @Injectable()
 export class AddressResolverImpl implements AddressResolver {
-  async resolveCoord(file: Express.Multer.File): Promise<CoordDto> {
-    return await ExifParser.parseCoordFromMulterFile(file)
+  async resolveCoord(file: Blob): Promise<CoordDto> {
+    return await ExifParser.parseCoordFromFile(file)
   }
   async resolveAddress(coord: CoordDto): Promise<string> {
     return await new KakaoAPIClient().coord2Address(coord.lng, coord.lat)

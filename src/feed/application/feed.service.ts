@@ -4,14 +4,23 @@ import { FeedRepository } from "../infra/feed.repository"
 import { Types } from "mongoose"
 import { FeedLikeRepository } from "../infra/feed-like.repository"
 import { FeedCommentRepository } from "../infra/feed-comment.repository"
-import { AddCommentCommand } from "./add-comment.command"
+import { AddCommentCommand } from "./command/add-comment.command"
 import { FeedComment } from "../domain/feed-comment.entity"
-import { AddSubCommentCommand } from "./add-subcomment.command"
 import { AddressResolver } from "../domain/address-resolver.service"
-import { PostFeedCommand } from "./post-feed.command"
 import { UserRepository } from "src/user/repository/user.repository"
-import { GetFeedCommand } from "./get-feed.command"
-import { GetFeedResponse } from "../controller/get-feeds.dto"
+import { GetFeedCommand } from "./command/get-feed.command"
+import { PaginationResponse } from "src/common/dto/pagination-response.dto"
+import { OnEvent } from "@nestjs/event-emitter"
+import { FeedLikedEvent } from "../event/feed-liked.event"
+import { FeedCommentAddedEvent } from "../event/feed-comment-added.event"
+import { FeedLikeCanceledEvent } from "../event/feed-like-canceled.event"
+import { FeedCommentDeletedEvent } from "../event/feed-comment-deleted.event"
+import { GetFeedResponse } from "../controller/dto/get-feeds.dto"
+import { GetMyPageFeedCommand } from "./command/get-mypage-feed.command"
+import { PostFeedCommand } from "./command/post-feed.command"
+import { GetProfileFeedCommand } from "./command/get-profile-feed.command"
+import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
+import { FileUtils } from "src/common/utils/file.manager"
 
 @Injectable()
 export class FeedService {
@@ -20,67 +29,84 @@ export class FeedService {
     private readonly feedLikeRepository: FeedLikeRepository,
     private readonly feedCommentRepository: FeedCommentRepository,
     private readonly userRepository: UserRepository,
-    @Inject("impl") private readonly addressResolver: AddressResolver,
+    @Inject("fileUtilsImpl") private readonly fileUtils: FileUtils,
+    @Inject("addressResolverImpl") private readonly addressResolver: AddressResolver,
   ) {}
 
   async postFeed(cmd: PostFeedCommand): Promise<string> {
-    const feed: Feed = await Feed.create(
-      cmd.userId,
-      cmd.title,
-      cmd.content,
-      cmd.tag,
-      cmd.date,
-      cmd.numOfPeople,
-      this.addressResolver,
-      cmd.files,
-      cmd.expenses,
-    )
+    const feed: Feed = await Feed.create({
+      userId: cmd.userId,
+      title: cmd.title,
+      content: cmd.content,
+      tag: cmd.tag,
+      date: cmd.date,
+      numOfPeople: cmd.numOfPeople,
+      addressResolver: this.addressResolver,
+      fileUtils: this.fileUtils,
+      files: cmd.files,
+      expenses: cmd.expenses,
+    })
     const saved = await this.feedRepository.create(feed)
 
     return saved._id.toString()
   }
 
-  async getFeeds(cmd: GetFeedCommand): Promise<GetFeedResponse[]> {
+  async getFeeds(cmd: GetFeedCommand): Promise<PaginationResponse<GetFeedResponse[]>> {
     const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, null)
     const totalElements = await this.feedRepository.count(null)
     const user = await this.userRepository.findOne({_id: cmd.userId})
     const likes = await this.feedLikeRepository.find({userId: cmd.userId, feedId: { $in: feeds.map((feed) => feed._id)}})
-    const commentCount = await this.feedCommentRepository.count({feedId: {$in: feeds.map((feed) => feed._id)}})
 
-    return await GetFeedResponse.of(feeds, user, likes, false, commentCount)
+    return new PaginationResponse(
+      cmd.page,
+      cmd.size,
+      totalElements,
+      await GetFeedResponse.of(feeds, user, likes, false, this.fileUtils, [])
+    )
   }
 
-  async likeFeed(userId: Types.ObjectId, feedId: Types.ObjectId) {
-    const feed = new Feed(await this.feedRepository.getOne({ _id: feedId }))
-    const feedLike = await this.feedLikeRepository.findOne({
-      userId: userId,
-      feedId: feedId,
-    })
+  async getProfileFeeds(cmd: GetProfileFeedCommand): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
+    const filterQuery = { userId: cmd.userId }
+    const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, filterQuery)
+    const totalElements = await this.feedRepository.count(filterQuery)
 
-    if (feedLike) {
-      feed.retractLike()
-      await this.feedLikeRepository.delete({ userId: userId, feedId: feedId })
-    } else {
-      await this.feedLikeRepository.create(feed.addLike(userId))
-    }
+    return new PaginationResponse(
+      cmd.page,
+      cmd.size,
+      totalElements,
+      await GetProfileFeedResponse.of(feeds, this.fileUtils)
+    )
+  }
+
+  @OnEvent("feed.liked")
+  async onFeedLiked(event: FeedLikedEvent) {
+    const feed = new Feed(await this.feedRepository.getOne({_id: event.feedId}))
+    feed.like()
 
     await this.feedRepository.upsert({ _id: feed._id }, feed)
   }
 
-  async addComment(cmd: AddCommentCommand) {
-    const feed = new Feed(await this.feedRepository.getOne({ _id: cmd.feedId }))
+  @OnEvent("feed.likeCanceled")
+  async onFeedLikeCanceled(event: FeedLikeCanceledEvent) {
+    const feed = new Feed(await this.feedRepository.getOne({_id: event.feedId}))
+    feed.cancelLike()
 
-    const comment = feed.addComment(cmd.content, cmd.userId)
-
-    await this.feedCommentRepository.create(comment)
+    await this.feedRepository.upsert({ _id: feed._id }, feed)
   }
 
-  async addSubComment(cmd: AddSubCommentCommand) {
-    const comment = new FeedComment(await this.feedCommentRepository.getOne({
-      _id: cmd.commentId,
-    }))
-    const subComment = comment.addSubComment(cmd.userId, cmd.content)
+  @OnEvent("feed.commentAdded")
+  async onFeedCommentAdded(event: FeedCommentAddedEvent) {
+    const feed = new Feed(await this.feedRepository.getOne({_id: event.feedId}))
+    feed.addComment()
 
-    await this.feedCommentRepository.create(subComment)
+    await this.feedRepository.upsert({ _id: feed._id }, feed)
+  }
+
+  @OnEvent("feed.commentDeleted")
+  async onFeedCommentDeleted(event: FeedCommentDeletedEvent) {
+    const feed = new Feed(await this.feedRepository.getOne({_id: event.feedId}))
+
+    feed.deleteComment()
+    await this.feedRepository.upsert({ _id: feed._id }, feed)
   }
 }

@@ -22,19 +22,34 @@ export class FeedComment extends AbstractDocument {
   parentId?: Types.ObjectId
   @Prop({ type: Number, required: true })
   likeCount: number
+  @Prop({ type: Number, required: true })
+  commentCount: number
 
   constructor(feedCommentProps: Partial<FeedComment>) {
     super()
     Object.assign(this, feedCommentProps)
   }
 
+  static async create(data: { content: string, feedId: Types.ObjectId, userId: Types.ObjectId }): Promise<FeedComment> {
+    return new FeedComment({
+      userId: data.userId,
+      feedId: data.feedId,
+      content: data.content,
+      likeCount: 0,
+      commentCount: 0
+    })
+  }
+
   addSubComment(userId: Types.ObjectId, content: string): FeedComment {
+    this.commentCount++
+    
     return new FeedComment({
       userId: userId, 
       feedId: this.feedId, 
       content: content, 
       parentId: this._id,
-      likeCount: 0
+      likeCount: 0,
+      commentCount: 0
     })
   }
 }

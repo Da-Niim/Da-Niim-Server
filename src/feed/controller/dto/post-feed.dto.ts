@@ -4,8 +4,7 @@ import { IsDateString, IsNotEmpty, MaxLength } from "class-validator"
 import { Express } from "express"
 import { Types } from "mongoose"
 import { RequireImageException } from "src/common/exceptions/require-image.exception"
-import { PostFeedCommand } from "../application/post-feed.command"
-import { Location } from "../location.type"
+import { PostFeedCommand } from "src/feed/application/command/post-feed.command"
 
 export class PostFeedRequest {
   @IsNotEmpty()

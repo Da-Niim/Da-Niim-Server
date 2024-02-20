@@ -2,8 +2,8 @@ import { ApiProduces, ApiProperty } from "@nestjs/swagger"
 import { Type } from "class-transformer"
 import { IsNotEmpty } from "class-validator"
 import { Types } from "mongoose"
-import { AddCommentCommand } from "../application/add-comment.command"
-import { AddSubCommentCommand } from "../application/add-subcomment.command"
+import { AddCommentCommand } from "../../application/command/add-comment.command"
+import { AddSubCommentCommand } from "../../application/command/add-subcomment.command"
 
 export class AddCommentRequest {
   @IsNotEmpty({ message: "댓글 내용을 입력해주세요." })

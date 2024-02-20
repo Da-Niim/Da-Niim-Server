@@ -3,13 +3,13 @@ import { throws } from "assert";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
 import { PaginationResponse } from "src/common/dto/pagination-response.dto";
-import { FileUtils } from "src/common/utils/file.utils";
+import { FileUtils } from "src/common/utils/file.manager";
 import { ImageEncoder } from "src/common/utils/image-encoder.utils";
+import { GetFeedCommand } from "src/feed/application/command/get-feed.command";
+import { FeedLike } from "src/feed/domain/feed-like.entity";
+import { Feed } from "src/feed/domain/feed.entity";
+import { Photo } from "src/feed/domain/photo.model";
 import { User } from "src/user/entity/user.entity";
-import { GetFeedCommand } from "../application/get-feed.command";
-import { FeedLike } from "../domain/feed-like.entity";
-import { Feed } from "../domain/feed.entity";
-import { Photo } from "../domain/photo.model";
 
 export class GetFeedRequest extends PaginationRequest {
     order: string
@@ -28,10 +28,22 @@ export class GetFeedRequest extends PaginationRequest {
     }
 }
 
+class GetFeedResponseUser {
+    @ApiProperty()
+    profileUrl: string
+    @ApiProperty()
+    name: string
+
+    constructor(data: {profileUrl: string, name: string}) {
+        this.name = data.name
+        this.profileUrl = data.profileUrl
+    }
+}
+
 export class GetFeedResponse {
     @ApiProperty()
     user: GetFeedResponseUser
-    @ApiProperty()
+    @ApiProperty({type: String, example: "65c2730ef8af3c6deec9befa"})
     id: Types.ObjectId
     @ApiProperty()
     photoUrls: string[]
@@ -56,30 +68,41 @@ export class GetFeedResponse {
         feeds: Feed[], 
         user: User, 
         likes: FeedLike[], 
-        best: boolean, 
-        commentCount: number): Promise<GetFeedResponse[]> {
+        best: boolean,
+        fileUtils: FileUtils,
+        properties: string[],
+        ): Promise<any[]> {
             return await Promise.all(feeds.map(async (feed) => {
-                return new GetFeedResponse({
-                    user: {
+                const source = new GetFeedResponse({
+                    user: new GetFeedResponseUser({
                         profileUrl: user.profileImage,
                         name: user.username
-                    },
+                    }),
                     id: feed._id,
-                    photoUrls: await GetFeedResponse.mapToPhotoUrls(feed.photos),
+                    photoUrls: await GetFeedResponse.mapToPhotoUrls(feed.photos, fileUtils),
                     title: feed.title,
                     tags: feed.tag,
                     likeCount: feed.likeCount,
-                    commentCount: commentCount,
+                    commentCount: feed.commentCount,
                     like: await GetFeedResponse.checkIfLiked(feed._id, user._id, likes),
                     best: best
                 })
+                // const extracted = {}
+                // if(properties.length > 0) {
+                //     for(const prop of properties) {
+                //         if(source.hasOwnProperty(prop)) {
+                //             extracted[prop] = source[prop]
+                //         }
+                //     }
+                // }
+
+                return source
             }))      
     }
 
-    static async mapToPhotoUrls(photos: Photo[]): Promise<string[]> {
+    static async mapToPhotoUrls(photos: Photo[], fileUtils: FileUtils): Promise<string[]> {
         const promise = photos.map(async (photo) => {
-            const fileBuffer = await FileUtils.loadFile(photo.storedFileName) 
-            return ImageEncoder.encodeToBase64String(fileBuffer)
+            return await fileUtils.getPublicUrl(photo.storedFileName, "feed")
         })
         return await Promise.all(promise)
     }
@@ -89,8 +112,4 @@ export class GetFeedResponse {
         if(find) return true
         else return false
     }
-}
-type GetFeedResponseUser = {
-    profileUrl: string
-    name: string
 }

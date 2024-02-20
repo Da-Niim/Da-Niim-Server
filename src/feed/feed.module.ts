@@ -11,9 +11,14 @@ import { FeedComment, FeedCommentSchema } from "./domain/feed-comment.entity"
 import { FeedCommentRepository } from "./infra/feed-comment.repository"
 import { FeedService } from "./application/feed.service"
 import { AddressResolverImpl } from "./infra/address-resolver.service.impl"
+import { FeedLikeService } from "./application/feed-like.service"
+import { FeedCommentService } from "./application/feed-comment.service"
+import { EventEmitterDynamicModule } from "src/common/event-emitter.module"
+import { SupabaseFileUtils } from "src/common/utils/supabase-file.manager"
 
 @Module({
   imports: [
+    EventEmitterDynamicModule,
     FileModule,
     UserModule,
     MongooseModule.forFeature([
@@ -25,10 +30,13 @@ import { AddressResolverImpl } from "./infra/address-resolver.service.impl"
   controllers: [FeedController],
   providers: [
     FeedService,
+    FeedLikeService,
+    FeedCommentService,
     FeedRepository,
     FeedLikeRepository,
     FeedCommentRepository,
-    { provide: "impl", useClass: AddressResolverImpl },
+    { provide: "addressResolverImpl", useClass: AddressResolverImpl },
+    { provide: "fileUtilsImpl", useClass: SupabaseFileUtils }
   ],
 })
 export class FeedModule {}
