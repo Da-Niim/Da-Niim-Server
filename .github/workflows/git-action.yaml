@@ -9,6 +9,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      ATTACHED_FILE_PATH: ${{ secrets.ATTACHED_FILE_PATH }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      HASH_ROUNDS: ${{ secrets.HASH_ROUNDS }}
+      KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Node.js
