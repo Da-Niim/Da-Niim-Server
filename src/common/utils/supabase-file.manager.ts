@@ -7,7 +7,7 @@ import { FileManager } from "./file.manager"
 @Injectable()
 export class SupabaseFileUtils implements FileManager {
   private readonly supabaseUrl = "https://bkaladzoyjtogjraspqj.supabase.co"
-  private readonly supabaseKey = process.env.SUPABASE_KEY || ""
+  private readonly supabaseKey = process.env.SUPABASE_KEY
   private readonly supabase = createClient(this.supabaseUrl, this.supabaseKey)
 
   async save(file: Express.Multer.File, destDir: string): Promise<string> {
