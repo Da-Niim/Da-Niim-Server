@@ -3,7 +3,7 @@ import { throws } from "assert";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
 import { PaginationResponse } from "src/common/dto/pagination-response.dto";
-import { FileUtils } from "src/common/utils/file.manager";
+import { FileManager } from "src/common/utils/file.manager";
 import { ImageEncoder } from "src/common/utils/image-encoder.utils";
 import { GetFeedCommand } from "src/feed/application/command/get-feed.command";
 import { FeedLike } from "src/feed/domain/feed-like.entity";
@@ -69,7 +69,7 @@ export class GetFeedResponse {
         user: User, 
         likes: FeedLike[], 
         best: boolean,
-        fileUtils: FileUtils,
+        fileManager: FileManager,
         properties: string[],
         ): Promise<any[]> {
             return await Promise.all(feeds.map(async (feed) => {
@@ -79,7 +79,7 @@ export class GetFeedResponse {
                         name: user.username
                     }),
                     id: feed._id,
-                    photoUrls: await GetFeedResponse.mapToPhotoUrls(feed.photos, fileUtils),
+                    photoUrls: await GetFeedResponse.mapToPhotoUrls(feed.photos, fileManager),
                     title: feed.title,
                     tags: feed.tag,
                     likeCount: feed.likeCount,
@@ -100,9 +100,9 @@ export class GetFeedResponse {
             }))      
     }
 
-    static async mapToPhotoUrls(photos: Photo[], fileUtils: FileUtils): Promise<string[]> {
+    static async mapToPhotoUrls(photos: Photo[], fileManager: FileManager): Promise<string[]> {
         const promise = photos.map(async (photo) => {
-            return await fileUtils.getPublicUrl(photo.storedFileName, "feed")
+            return await fileManager.getPublicUrl(photo.storedFileName, "feed")
         })
         return await Promise.all(promise)
     }

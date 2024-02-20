@@ -68,6 +68,9 @@ export class User extends AbstractDocument {
   @Prop([{ type: Array<Types.ObjectId>, ref: "User" }])
   followings: Types.ObjectId[]
 
+  @Prop({required: false, default: null})
+  intro?: string
+
   async follow(targetUser: User) {
     const isIncludeFollowing = this.followings.some((e) =>
       e.equals(targetUser._id),
