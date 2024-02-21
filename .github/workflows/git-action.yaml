@@ -39,5 +39,5 @@ jobs:
             echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .dev.env
             echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .dev.env
             /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm install
-            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm run build
+            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm run build:dev
             /home/***/.nvm/versions/node/v21.6.2/bin/pm2 start dist/main.js --name daniim -f
