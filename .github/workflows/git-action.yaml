@@ -28,6 +28,9 @@ jobs:
             NODE_PATH=/home/ubuntu/.nvm/versions/node/v21.6.2/bin
             export PATH=$NODE_PATH:$PATH
             cd ./Da-Niim-Server
+            pm2 list
+            pm2 stop daniim
+            pm2 delete daniim
             git pull origin ${{ github.ref_name }}
             echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .dev.env
             echo "ATTACHED_FILE_PATH=${{ secrets.ATTACHED_FILE_PATH }}" >> .dev.env
@@ -37,4 +40,4 @@ jobs:
             echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .dev.env
             /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm install
             /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm run build
-              /home/ubuntu/.nvm/versions/node/v21.6.2/bin/pm2 start dist/main.js --name daniim
+            /home/***/.nvm/versions/node/v21.6.2/bin/pm2 start dist/main.js --name daniim -f
