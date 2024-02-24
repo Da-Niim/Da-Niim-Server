@@ -71,6 +71,12 @@ export class User extends AbstractDocument {
   @Prop({required: false, default: null})
   intro?: string
 
+  @Prop({required: true, default: 0})
+  postCount: number
+
+  @Prop({required: true, default: 0})
+  travelogCount: number
+
   async follow(targetUser: User) {
     const isIncludeFollowing = this.followings.some((e) =>
       e.equals(targetUser._id),

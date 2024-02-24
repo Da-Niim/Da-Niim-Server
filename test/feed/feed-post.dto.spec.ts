@@ -1,6 +1,6 @@
 import { ArgumentMetadata, ValidationPipe } from "@nestjs/common"
 import { generate } from "randomstring"
-import { FeedPostRequest } from "src/feed/controller/post-feed.dto"
+import { PostFeedRequest } from "src/feed/controller/dto/post-feed.dto"
 
 describe("FeedPostDto", () => {
   let validationPipe: ValidationPipe
@@ -12,14 +12,14 @@ describe("FeedPostDto", () => {
     })
     metadata = {
       type: "body",
-      metatype: FeedPostRequest,
+      metatype: PostFeedRequest,
       data: "",
     }
   })
   it("should validate fields", async () => {
     try {
       await validationPipe.transform(
-        <FeedPostRequest>{
+        <PostFeedRequest>{
           title: "",
           content: "",
           date: "",
@@ -43,7 +43,7 @@ describe("FeedPostDto", () => {
   it("should not have content longer than 500 chars", async () => {
     try {
       await validationPipe.transform(
-        <FeedPostRequest>{
+        <PostFeedRequest>{
           title: "test",
           content: generate(501),
           tag: ["test"],
@@ -64,7 +64,7 @@ describe("FeedPostDto", () => {
   it("should not have non-ISO 8601 type date", async () => {
     try {
       await validationPipe.transform(
-        <FeedPostRequest>{
+        <PostFeedRequest>{
           title: "test",
           content: "content",
           tag: ["test"],

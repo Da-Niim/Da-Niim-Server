@@ -3,15 +3,12 @@ import { ClassConstructor, plainToInstance } from "class-transformer"
 import {
   Connection,
   FilterQuery,
-  FlattenMaps,
   Model,
   PipelineStage,
-  Require_id,
   SaveOptions,
   Types,
   UpdateQuery,
 } from "mongoose"
-import { filter } from "rxjs"
 import { AbstractDocument } from "./abstract.schema"
 import { DocumentNotFoundException } from "./exceptions/not-found.exception"
 
@@ -20,7 +17,6 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   constructor(
     protected readonly model: Model<TDocument>,
-    private readonly connection: Connection,
     private readonly cls: ClassConstructor<TDocument>,
   ) {}
 

@@ -10,9 +10,8 @@ export class UserRepository extends AbstractRepository<User> {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-    @InjectConnection() connection: Connection,
   ) {
-    super(userModel, connection, User)
+    super(userModel, User)
     this.logger = new Logger(UserRepository.name)
   }
 

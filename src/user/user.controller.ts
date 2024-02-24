@@ -17,4 +17,10 @@ export class UserController {
   getUserInfo(@Req() requestDto: Request) {
     return this.userService.getUserInfo(requestDto)
   }
+
+  @Get("/me/info/profile")
+  @UseGuards(BearerTokenGuard)
+  getUserProfileInfo(@Req() req: Request) {
+    return this.userService.getUserProfileInfo(req.user._id)
+  }
 }

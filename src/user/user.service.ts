@@ -6,6 +6,10 @@ import { ConfigService } from "@nestjs/config"
 import { ENV_HASH_ROUNDS_KEY } from "src/common/const/env-keys.const"
 import { Request } from "express"
 import { User } from "./entity/user.entity"
+import { Types } from "mongoose"
+import { serialize } from "v8"
+import { FeedPostedEvent } from "src/feed/event/feed-posted-event"
+import { OnEvent } from "@nestjs/event-emitter"
 
 @Injectable()
 export class UserService {
@@ -51,5 +55,28 @@ export class UserService {
       nickname: requestDto.user.nickname,
       profileImage: requestDto.user.profileImage,
     }
+  }
+
+  async getUserProfileInfo(userId: Types.ObjectId) {
+    const user = await this.userRepository.findOne({_id: userId})
+
+    return {
+      name: user.nickname,
+      profileUrl: user.profileImage,
+      intro: user.intro,
+      postCount: user.postCount,
+      travelogCount: user.travelogCount,
+      followerCount: user.followers.length,
+      followingCount: user.followings.length
+    }
+  }
+
+  @OnEvent("FeedPostedEvent")
+  async onFeedPosted(event: FeedPostedEvent) {
+    const user = await this.userRepository.findOne({_id: event.userId})
+
+    user.postCount += 1
+
+    this.userRepository.findOneAndUpdate({_id: event.userId}, user)
   }
 }
