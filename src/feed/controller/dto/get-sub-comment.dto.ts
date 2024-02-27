@@ -37,7 +37,7 @@ class GetSubCommentResponse {
         return comments.map((value) => {
             return {
                 id: value._id.toString(),
-                author: "TODO",
+                author: value.userName,
                 content: value.content,
                 likeCount: value.likeCount,
                 own: userId.equals(value.userId),

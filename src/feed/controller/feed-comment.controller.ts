@@ -14,12 +14,10 @@ import {
   import { AddCommentRequest } from "./dto/add-comment.request"
   import {
     ApiBearerAuth,
-    ApiOkResponse,
     ApiParam,
     ApiTags,
   } from "@nestjs/swagger"
   import { FeedCommentService } from "../application/feed-comment.service"
-import { PutBucketInventoryConfigurationRequestFilterSensitiveLog } from "@aws-sdk/client-s3"
 import { GetCommentRequest, GetCommentResponse } from "./dto/get-comment.dto"
 import { PaginationResponse } from "src/common/dto/pagination-response.dto"
 import { ApiOkResponsePaginated } from "src/common/decorators/api-pagination-response.decorator"
@@ -41,7 +39,11 @@ import { GetSubCommentRequest, GetSubCommentResponse } from "./dto/get-sub-comme
       @Req() req: Request,
     ) {
       await this.feedCommentService.addComment(
-        body.toAddCommand(req.user._id, new Types.ObjectId(id)),
+        body.toAddCommand({
+          userId: req.user._id, 
+          userName: req.user.username,
+          feedId: new Types.ObjectId(id)
+        })
       )
     }
   
@@ -57,11 +59,12 @@ import { GetSubCommentRequest, GetSubCommentResponse } from "./dto/get-sub-comme
       @Req() req: Request,
     ) {
       await this.feedCommentService.addSubComment(
-        body.toAddSubCommand(
-          req.user._id,
-          new Types.ObjectId(id),
-          new Types.ObjectId(commentId),
-        ),
+        body.toAddSubCommand({
+          userId: req.user._id,
+          userName: req.user.username,
+          feedId: new Types.ObjectId(id),
+          commentId: new Types.ObjectId(commentId),
+        }),
       )
     }
 
