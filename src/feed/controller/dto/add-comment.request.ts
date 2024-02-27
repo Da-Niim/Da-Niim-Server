@@ -11,27 +11,31 @@ export class AddCommentRequest {
   @ApiProperty({ type: "string", example: "댓글 내용" })
   content: string
 
-  toAddCommand(
+  toAddCommand(data: {
     userId: Types.ObjectId,
+    userName: string,
     feedId: Types.ObjectId,
-  ): AddCommentCommand {
+  }): AddCommentCommand {
     return {
-      userId: userId,
-      feedId: feedId,
+      userId: data.userId,
+      userName: data.userName,
+      feedId: data.feedId,
       content: this.content,
     }
   }
 
-  toAddSubCommand(
+  toAddSubCommand(data: {
     userId: Types.ObjectId,
+    userName: string,
     feedId: Types.ObjectId,
     commentId: Types.ObjectId,
-  ): AddSubCommentCommand {
+  }): AddSubCommentCommand {
     return {
-      userId: userId,
-      feedId: feedId,
+      userId: data.userId,
+      userName: data.userName,
+      feedId: data.feedId,
       content: this.content,
-      commentId: commentId,
+      commentId: data.commentId,
     }
   }
 }

@@ -14,6 +14,8 @@ export type FeedCommentDocument = HydratedDocument<FeedComment>
 export class FeedComment extends AbstractDocument {
   @Prop({ type: SchemaTypes.ObjectId, required: true })
   userId: Types.ObjectId
+  @Prop({ type: String, required: true })
+  userName: string
   @Prop({ type: SchemaTypes.ObjectId, required: true })
   feedId: Types.ObjectId
   @Prop({ type: String, required: true })
@@ -30,9 +32,10 @@ export class FeedComment extends AbstractDocument {
     Object.assign(this, feedCommentProps)
   }
 
-  static async create(data: { content: string, feedId: Types.ObjectId, userId: Types.ObjectId }): Promise<FeedComment> {
+  static async create(data: { content: string, feedId: Types.ObjectId, userId: Types.ObjectId, userName: string }): Promise<FeedComment> {
     return new FeedComment({
       userId: data.userId,
+      userName: data.userName,
       feedId: data.feedId,
       content: data.content,
       likeCount: 0,
@@ -40,11 +43,12 @@ export class FeedComment extends AbstractDocument {
     })
   }
 
-  addSubComment(userId: Types.ObjectId, content: string): FeedComment {
+  addSubComment(userId: Types.ObjectId, userName: string, content: string): FeedComment {
     this.commentCount++
     
     return new FeedComment({
       userId: userId, 
+      userName: userName,
       feedId: this.feedId, 
       content: content, 
       parentId: this._id,

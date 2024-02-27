@@ -20,7 +20,8 @@ export class FeedCommentService {
         const feedComment = await FeedComment.create({
             content: cmd.content,
             feedId: cmd.feedId,
-            userId: cmd.userId
+            userId: cmd.userId,
+            userName: cmd.userName
         })
 
         await this.feedCommentRepository.create(feedComment)
@@ -38,7 +39,7 @@ export class FeedCommentService {
     }))
     if(parentComment.parentId) throw new SubCommentAdditionException()
 
-    const subComment = parentComment.addSubComment(cmd.userId, cmd.content)
+    const subComment = parentComment.addSubComment(cmd.userId, cmd.userName, cmd.content)
     await this.feedCommentRepository.create(subComment)
     await this.feedCommentRepository.upsert({_id: cmd.commentId}, parentComment)
 
