@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-export class GetProfileFeedCommand {
+export class GetProfileFeedQuery {
     page: number
     size: number
     userId: Types.ObjectId

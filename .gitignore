@@ -142,3 +142,5 @@ mongo
 *.env
 
 test/setEnvFiles.ts
+
+package-lock.json

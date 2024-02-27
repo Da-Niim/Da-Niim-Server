@@ -1,11 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { throws } from "assert";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
-import { PaginationResponse } from "src/common/dto/pagination-response.dto";
 import { FileManager } from "src/common/utils/file.manager";
-import { ImageEncoder } from "src/common/utils/image-encoder.utils";
-import { GetFeedCommand } from "src/feed/application/command/get-feed.command";
+import { GetFeedQuery } from "src/feed/application/query/get-feed.query";
 import { FeedLike } from "src/feed/domain/feed-like.entity";
 import { Feed } from "src/feed/domain/feed.entity";
 import { Photo } from "src/feed/domain/photo.model";
@@ -16,7 +13,7 @@ export class GetFeedRequest extends PaginationRequest {
     region: string
     hashtag: string
 
-    async toCommand(userId: Types.ObjectId): Promise<GetFeedCommand> {
+    async toCommand(userId: Types.ObjectId): Promise<GetFeedQuery> {
         return {
             userId: userId,
             order: this.order,

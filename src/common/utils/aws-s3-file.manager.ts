@@ -1,7 +1,8 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { Injectable } from "@nestjs/common";
+import { ConsoleLogger, Injectable } from "@nestjs/common";
 import { FileManager } from "./file.manager";
 import { v4 as uuid } from "uuid"
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AWSS3FileManager implements FileManager {
@@ -11,6 +12,9 @@ export class AWSS3FileManager implements FileManager {
         const REGION = process.env.AWS_REGION
         const AWS_S3_ACCESS_KEY = process.env.AWS_S3_ACCESS_KEY
         const AWS_S3_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY
+
+        console.log("AWS_S3_ACCESS_KEY", AWS_S3_ACCESS_KEY)
+        console.log("AWS S3 AWS_S3_SECREY_ACCESS_KEY", AWS_S3_ACCESS_KEY)
 
         this.s3Client = new S3Client({
             region: REGION, // AWS Region

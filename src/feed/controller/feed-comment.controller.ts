@@ -1,8 +1,10 @@
 import {
     Body,
     Controller,
+    Get,
     Param,
     Post,
+    Query,
     Req,
     UseGuards,
   } from "@nestjs/common"
@@ -12,10 +14,16 @@ import {
   import { AddCommentRequest } from "./dto/add-comment.request"
   import {
     ApiBearerAuth,
+    ApiOkResponse,
     ApiParam,
     ApiTags,
   } from "@nestjs/swagger"
   import { FeedCommentService } from "../application/feed-comment.service"
+import { PutBucketInventoryConfigurationRequestFilterSensitiveLog } from "@aws-sdk/client-s3"
+import { GetCommentRequest, GetCommentResponse } from "./dto/get-comment.dto"
+import { PaginationResponse } from "src/common/dto/pagination-response.dto"
+import { ApiOkResponsePaginated } from "src/common/decorators/api-pagination-response.decorator"
+import { GetSubCommentRequest, GetSubCommentResponse } from "./dto/get-sub-comment.dto"
   
   @Controller("feeds")
   @ApiTags("feeds")
@@ -55,5 +63,33 @@ import {
           new Types.ObjectId(commentId),
         ),
       )
+    }
+
+    @Get(":id/comments")
+    @UseGuards(BearerTokenGuard)
+    @ApiBearerAuth("access-token")
+    @ApiParam({name: "id", description: "피드 ID"})
+    @ApiOkResponsePaginated(GetCommentResponse)
+    async getComments(@Param("id") id: string, @Query() query: GetCommentRequest, @Req() req: Request): Promise<PaginationResponse<GetCommentResponse[]>> {
+      const cmd = query.toQuery(new Types.ObjectId(id), req.user._id)
+
+      return await this.feedCommentService.getComment(cmd)
+    }
+
+
+    @Get(":id/comments/:commentId/subComments")
+    @UseGuards(BearerTokenGuard)
+    @ApiBearerAuth("access-token")
+    @ApiParam({ name: "id", description: "피드 ID" })
+    @ApiParam({ name: "commentId", description: "댓글 ID" })
+    @ApiOkResponsePaginated(GetSubCommentResponse)
+    async getSubComment(
+      @Query() query: GetSubCommentRequest,
+      @Param("id") id: string,
+      @Param("commentId") commentId: string,
+      @Req() req: Request,
+    ): Promise<PaginationResponse<GetSubCommentResponse[]>> {
+      const q = query.toQuery(new Types.ObjectId(id), new Types.ObjectId(commentId), req.user._id)
+      return await this.feedCommentService.getSubComments(q)
     }
   }
