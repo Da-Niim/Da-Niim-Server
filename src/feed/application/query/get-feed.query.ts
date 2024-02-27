@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-export type GetFeedCommand = {
+export type GetFeedQuery = {
     userId: Types.ObjectId,
     order: string
     region: string

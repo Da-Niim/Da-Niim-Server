@@ -1,18 +1,15 @@
-import { targetModulesByContainer } from "@nestjs/core/router/router-module";
 import { ApiProperty } from "@nestjs/swagger";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
 import { FileManager } from "src/common/utils/file.manager";
-import { ImageEncoder } from "src/common/utils/image-encoder.utils";
-import { GetProfileFeedCommand } from "src/feed/application/command/get-profile-feed.command";
+import { GetProfileFeedQuery } from "src/feed/application/query/get-profile-feed.query";
 import { Feed } from "src/feed/domain/feed.entity";
-import { Photo } from "src/feed/domain/photo.model";
 
 export class GetProfileFeedRequest extends PaginationRequest {
     target: Types.ObjectId
 
-    async toCommand(userId: Types.ObjectId): Promise<GetProfileFeedCommand> {
-        return new GetProfileFeedCommand({
+    async toCommand(userId: Types.ObjectId): Promise<GetProfileFeedQuery> {
+        return new GetProfileFeedQuery({
             userId: userId,
             target: this.target,
             page: this.page,

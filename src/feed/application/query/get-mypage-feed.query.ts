@@ -1,6 +1,6 @@
 import { ObjectId, Types } from "mongoose"
 
-export type GetMyPageFeedCommand = {
+export type GetMyPageFeedQuery = {
     userId: Types.ObjectId,
     page: number,
     size: number

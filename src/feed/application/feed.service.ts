@@ -14,9 +14,9 @@ import { FeedLikedEvent } from "../event/feed-liked.event"
 import { FeedCommentRepository } from "../infra/feed-comment.repository"
 import { FeedLikeRepository } from "../infra/feed-like.repository"
 import { FeedRepository } from "../infra/feed.repository"
-import { GetFeedCommand } from "./command/get-feed.command"
-import { GetProfileFeedCommand } from "./command/get-profile-feed.command"
 import { PostFeedCommand } from "./command/post-feed.command"
+import { GetFeedQuery } from "./query/get-feed.query"
+import { GetProfileFeedQuery } from "./query/get-profile-feed.query"
 
 @Injectable()
 export class FeedService {
@@ -49,7 +49,7 @@ export class FeedService {
   }
 
   async getFeeds(
-    cmd: GetFeedCommand,
+    cmd: GetFeedQuery,
   ): Promise<PaginationResponse<GetFeedResponse[]>> {
     const feeds = await this.feedRepository.findWithPagination(
       cmd.page,
@@ -72,7 +72,7 @@ export class FeedService {
   }
 
   async getProfileFeeds(
-    cmd: GetProfileFeedCommand,
+    cmd: GetProfileFeedQuery,
   ): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
     const filterQuery = { userId: cmd.userId }
     const feeds = await this.feedRepository.findWithPagination(

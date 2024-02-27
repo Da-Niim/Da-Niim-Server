@@ -1,11 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { PaginationResponse } from "src/common/dto/pagination-response.dto";
+import { GetCommentResponse } from "../controller/dto/get-comment.dto";
+import { GetSubCommentResponse } from "../controller/dto/get-sub-comment.dto";
 import { FeedComment } from "../domain/feed-comment.entity";
 import { FeedCommentAddedEvent } from "../event/feed-comment-added.event";
 import { SubCommentAdditionException } from "../exception/subcomment-addition.exception";
 import { FeedCommentRepository } from "../infra/feed-comment.repository";
 import { AddCommentCommand } from "./command/add-comment.command";
 import { AddSubCommentCommand } from "./command/add-subcomment.command";
+import { GetCommentQuery } from "./query/get-comment.query";
+import { GetSubCommentQuery } from "./query/get-sub-comment.query";
 
 @Injectable()
 export class FeedCommentService {
@@ -41,5 +46,29 @@ export class FeedCommentService {
         feedId: cmd.feedId,
         userId: cmd.userId
     }))
+  }
+
+  async getComment(cmd: GetCommentQuery): Promise<PaginationResponse<GetCommentResponse[]>> {
+    const comments = await this.feedCommentRepository.findWithPagination(cmd.page, cmd.size, { feedId: cmd.feedId, parentId: null})
+    const totalElements = await this.feedCommentRepository.count({ feedId: cmd.feedId, parentId: null })
+
+    return new PaginationResponse(
+      cmd.page,
+      cmd.size,
+      totalElements,
+      GetCommentResponse.of(comments, cmd.userId)
+    )
+  }
+  
+  async getSubComments(cmd: GetSubCommentQuery): Promise<PaginationResponse<GetSubCommentResponse[]>> {
+    const subComments = await this.feedCommentRepository.findWithPagination(cmd.page, cmd.size, { feedId: cmd.feedId, parentId: cmd.commentId })
+    const totalElements = await this.feedCommentRepository.count({ feedId: cmd.feedId, parentId: cmd.commentId })
+
+    return new PaginationResponse(
+      cmd.page,
+      cmd.size,
+      totalElements,
+      GetSubCommentResponse.of(subComments, cmd.userId)
+    )
   }
 }

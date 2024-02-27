@@ -15,7 +15,7 @@ export class PaginationResponse<T> {
         this.page = page
         this.size = size
         this.totalElements = totalElements
-        this.totalPage = Math.floor(totalElements / size)
+        this.totalPage = Math.ceil(totalElements / size)
         this.data = data
     }
 }

@@ -1,16 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { FeedRepository } from "../infra/feed.repository"
 import { FeedLikeRepository } from "../infra/feed-like.repository"
-import { FeedCommentRepository } from "../infra/feed-comment.repository"
-import { AddressResolver } from "../domain/address-resolver.service"
 import { UserRepository } from "src/user/repository/user.repository"
-import { GetFeedCommand } from "./command/get-feed.command"
 import { PaginationResponse } from "src/common/dto/pagination-response.dto"
-import { EventEmitter2 } from "@nestjs/event-emitter"
 import { GetFeedResponse } from "../controller/dto/get-feeds.dto"
-import { GetProfileFeedCommand } from "./command/get-profile-feed.command"
 import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
 import { FileManager } from "src/common/utils/file.manager"
+import { GetFeedQuery } from "./query/get-feed.query"
+import { GetProfileFeedQuery } from "./query/get-profile-feed.query"
 
 @Injectable()
 export class GetFeedService {
@@ -21,7 +18,7 @@ export class GetFeedService {
     @Inject("fileUtilsImpl") private readonly fileManager: FileManager,
   ) {}
 
-  async getFeeds(cmd: GetFeedCommand): Promise<PaginationResponse<GetFeedResponse[]>> {
+  async getFeeds(cmd: GetFeedQuery): Promise<PaginationResponse<GetFeedResponse[]>> {
     const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, null)
     const totalElements = await this.feedRepository.count(null)
     const user = await this.userRepository.findOne({_id: cmd.userId})
@@ -35,7 +32,7 @@ export class GetFeedService {
     )
   }
 
-  async getProfileFeeds(cmd: GetProfileFeedCommand): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
+  async getProfileFeeds(cmd: GetProfileFeedQuery): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
     const filterQuery = { userId: cmd.userId }
     const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, filterQuery)
     const totalElements = await this.feedRepository.count(filterQuery)
