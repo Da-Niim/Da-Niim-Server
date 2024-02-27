@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { UserGender } from "../const/user.gender.const"
 import {
   IsEmail,
   IsPhoneNumber,
@@ -7,10 +6,10 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator"
-import { AbstractDocument } from "src/common/abstract.schema"
 import { Types } from "mongoose"
+import { AbstractDocument } from "src/common/abstract.schema"
 import { AlreadyFollowingException } from "src/follow/already-following.exception"
-import { InternalServerErrorException } from "@nestjs/common"
+import { UserGender } from "../const/user.gender.const"
 
 @Schema({ timestamps: true })
 export class User extends AbstractDocument {
@@ -68,7 +67,7 @@ export class User extends AbstractDocument {
   @Prop([{ type: Array<Types.ObjectId>, ref: "User" }])
   followings: Types.ObjectId[]
 
-  @Prop({required: false, default: null})
+  @Prop({ required: false, default: null })
   intro?: string
 
   @Prop({required: true, default: 0})
