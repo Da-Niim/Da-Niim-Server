@@ -140,3 +140,5 @@ mongo
 
 # Env
 *.env
+
+test/setEnvFiles.ts

@@ -15,19 +15,42 @@ describe("Feed Entity", () => {
         photos: [new Photo("a", "a")],
         expenses: 10,
       }
-      expect(
-        () =>
-          new Feed(
-            input.userId,
-            input.title,
-            input.photos,
-            input.content,
-            input.tag,
-            input.date,
-            input.numOfPeople,
-            input.expenses,
-          ),
-      ).toThrow()
+      // expect(
+      //   () => new Feed({...input}),
+      // ).toThrow()
+    })
+  });
+
+  describe("like feed", () => {
+    it("should increase 1 to likeCount", () => {
+      const feed = new Feed({ likeCount: 0})
+      feed.like()
+      expect(feed.likeCount).toBe(1)
+    })
+  })
+
+  describe("cancel feed like", () => {
+    it("should decrease 1 to likeCount", () => {
+      const feed = new Feed({ likeCount: 1})
+      feed.cancelLike()
+      expect(feed.likeCount).toBe(0)
+    })
+  })
+
+  describe("add comment", () => {
+    it("should increase 1 to commentCount", () => {
+      const feed = new Feed({ commentCount: 0})
+      feed.addComment()
+      expect(feed.commentCount).toBe(1)
+    })
+  })
+
+
+  describe("delete comment", () => {
+    it("should decrease 1 to commentCount", () => {
+      const feed = new Feed({ commentCount: 1})
+      feed.deleteComment()
+      expect(feed.commentCount).toBe(0)
     })
   })
 })

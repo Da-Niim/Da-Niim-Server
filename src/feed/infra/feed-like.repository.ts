@@ -10,9 +10,8 @@ export class FeedLikeRepository extends AbstractRepository<FeedLike> {
 
   constructor(
     @InjectModel(FeedLike.name) feedLikeModel: Model<FeedLike>,
-    @InjectConnection() connection: Connection,
   ) {
-    super(feedLikeModel, connection, FeedLike)
+    super(feedLikeModel, FeedLike)
     this.logger = new Logger(FeedLikeRepository.name)
   }
 }

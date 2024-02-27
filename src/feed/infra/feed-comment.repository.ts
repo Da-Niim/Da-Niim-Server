@@ -9,9 +9,8 @@ export class FeedCommentRepository extends AbstractRepository<FeedComment> {
 
   constructor(
     @InjectModel(FeedComment.name) feedCommentModel: Model<FeedComment>,
-    @InjectConnection() connection: Connection,
   ) {
-    super(feedCommentModel, connection, FeedComment)
+    super(feedCommentModel, FeedComment)
     this.logger = new Logger(FeedCommentRepository.name)
   }
 }
