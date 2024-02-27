@@ -1,0 +1,42 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            NODE_PATH=/home/ubuntu/.nvm/versions/node/v21.6.2/bin
+            export PATH=$NODE_PATH:$PATH
+            cd ./Da-Niim-Server
+            pm2 list
+            pm2 stop daniim
+            pm2 delete daniim
+            git pull origin ${{ github.ref_name }}
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+            echo "ATTACHED_FILE_PATH=${{ secrets.ATTACHED_FILE_PATH }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
+            echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .env
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm install
+            /home/ubuntu/.nvm/versions/node/v21.6.2/bin/npm run build
+            /home/***/.nvm/versions/node/v21.6.2/bin/pm2 start dist/main.js --name daniim -f

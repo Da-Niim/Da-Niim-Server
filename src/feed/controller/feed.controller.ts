@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseFilePipe,
   Post,
   Query,
   Req,
@@ -15,38 +14,39 @@ import {
   UseInterceptors,
 } from "@nestjs/common"
 import { FileFieldsInterceptor } from "@nestjs/platform-express"
-import { Request } from "express"
-import { Types } from "mongoose"
-import { BearerTokenGuard } from "src/auth/guard/bearer-token.guard"
-import { MultiImageFileValidationPipe } from "src/infra/file/file.multiImageFileValidation.pipe"
-import { User } from "src/user/entity/user.entity"
-import { FeedService } from "../application/feed.service"
-import { AddCommentRequest } from "./dto/add-comment.request"
 import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiCreatedResponse,
-  ApiHeader,
   ApiParam,
-  ApiResponse,
   ApiTags,
 } from "@nestjs/swagger"
-import { PostFeedRequest } from "./dto/post-feed.dto"
-import { GetFeedRequest, GetFeedResponse } from "./dto/get-feeds.dto"
-import { FeedLikeService } from "../application/feed-like.service"
-import { FeedCommentService } from "../application/feed-comment.service"
-import { GetProfileFeedRequest, GetProfileFeedResponse } from "./dto/get-profile-feed.dto"
-import { PaginationResponse } from "src/common/dto/pagination-response.dto"
+import { Request } from "express"
+import { Types } from "mongoose"
+import { BearerTokenGuard } from "src/auth/guard/bearer-token.guard"
 import { ApiOkResponsePaginated } from "src/common/decorators/api-pagination-response.decorator"
+import { PaginationResponse } from "src/common/dto/pagination-response.dto"
+import { MultiImageFileValidationPipe } from "src/infra/file/file.multiImageFileValidation.pipe"
+import { User } from "src/user/entity/user.entity"
+import { FeedCommentService } from "../application/feed-comment.service"
+import { FeedLikeService } from "../application/feed-like.service"
+import { FeedService } from "../application/feed.service"
+import { AddCommentRequest } from "./dto/add-comment.request"
+import { GetFeedRequest, GetFeedResponse } from "./dto/get-feeds.dto"
+import {
+  GetProfileFeedRequest,
+  GetProfileFeedResponse,
+} from "./dto/get-profile-feed.dto"
+import { PostFeedRequest } from "./dto/post-feed.dto"
 
 @Controller("feeds")
 @ApiTags("feeds")
 export class FeedController {
   constructor(
-    private readonly feedService: FeedService, 
-    private readonly feedLikeService: FeedLikeService, 
-    private readonly feedCommentService: FeedCommentService) {}
+    private readonly feedService: FeedService,
+    private readonly feedLikeService: FeedLikeService,
+    private readonly feedCommentService: FeedCommentService,
+  ) {}
 
   @ApiConsumes("multipart/form-data")
   @Post()
@@ -77,7 +77,10 @@ export class FeedController {
   @UseGuards(BearerTokenGuard)
   @ApiBearerAuth("access-token")
   @ApiOkResponsePaginated(GetFeedResponse)
-  async getFeeds(@Query() query: GetFeedRequest, @Req() req: Request): Promise<PaginationResponse<GetFeedResponse[]>> {
+  async getFeeds(
+    @Query() query: GetFeedRequest,
+    @Req() req: Request,
+  ): Promise<PaginationResponse<GetFeedResponse[]>> {
     return await this.feedService.getFeeds(await query.toCommand(req.user._id))
   }
 
@@ -85,9 +88,14 @@ export class FeedController {
   @UseGuards(BearerTokenGuard)
   @ApiBearerAuth("access-token")
   @ApiOkResponsePaginated(GetProfileFeedResponse)
-  async getProfileFeeds(@Query() query: GetProfileFeedRequest, @Req() req: Request): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
+  async getProfileFeeds(
+    @Query() query: GetProfileFeedRequest,
+    @Req() req: Request,
+  ): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
     const user = req.user
-    return await this.feedService.getProfileFeeds(await query.toCommand(user._id))
+    return await this.feedService.getProfileFeeds(
+      await query.toCommand(user._id),
+    )
   }
 
   @Post(":id/like")
@@ -105,8 +113,9 @@ export class FeedController {
   async cancelFeedLike(@Param("id") id: string, @Req() req: Request) {
     const user: User = req.user
     await this.feedLikeService.cancelLikeFeed({
-      userId: user._id, 
-      feedId: new Types.ObjectId(id)})
+      userId: user._id,
+      feedId: new Types.ObjectId(id),
+    })
   }
 
   @Post(":id/comments")
