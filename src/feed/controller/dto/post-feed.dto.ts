@@ -27,7 +27,7 @@ export class PostFeedRequest {
 
   @Type(() => String)
   @IsDateString()
-  @ApiProperty({ type: "string", example: "2023-04-01" })
+  @ApiProperty({ type: "string", example: "2023-04-01", required: false })
   date?: string
 
   // @Transform(({ value }) => JSON.parse(value))
@@ -35,11 +35,11 @@ export class PostFeedRequest {
   // location: Location
 
   @Type(() => Number)
-  @ApiProperty({ type: "number", example: 2 })
+  @ApiProperty({ type: "number", example: 2, required: false })
   numOfPeople?: number
 
   @Type(() => Number)
-  @ApiProperty({ type: "number", example: 250000 })
+  @ApiProperty({ type: "number", example: 250000, required: false })
   expenses?: number
 
   @ApiProperty({ type: "array", items: { type: "string", format: "binary" } })

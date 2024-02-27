@@ -3,6 +3,8 @@ import { UserService } from "./user.service"
 import { UserRegisterDto } from "./dto/user-register.dto"
 import { BearerTokenGuard } from "src/auth/guard/bearer-token.guard"
 import { Request } from "express"
+import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiResponseProperty } from "@nestjs/swagger"
+import { GetUserProfileInfoDto } from "./dto/get-user-profile-info.dto"
 
 @Controller("user")
 export class UserController {
@@ -11,7 +13,7 @@ export class UserController {
   registerUser(@Body() user: UserRegisterDto) {
     return this.userService.registerUser(user)
   }
-
+  
   @Get("info")
   @UseGuards(BearerTokenGuard)
   getUserInfo(@Req() requestDto: Request) {
@@ -20,7 +22,9 @@ export class UserController {
 
   @Get("/me/info/profile")
   @UseGuards(BearerTokenGuard)
-  getUserProfileInfo(@Req() req: Request) {
+  @ApiBearerAuth("access-token")
+  @ApiOkResponse({type: GetUserProfileInfoDto})
+  getUserProfileInfo(@Req() req: Request): Promise<GetUserProfileInfoDto> {
     return this.userService.getUserProfileInfo(req.user._id)
   }
 }

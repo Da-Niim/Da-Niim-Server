@@ -22,13 +22,13 @@ export class AWSS3FileManager implements FileManager {
     }
 
   getPublicUrl(filename: string, srcDir: string): Promise<string> {
-    return new Promise((resolve, reject) => { resolve(this.buildPublicUrl(srcDir+filename)) })
+    return new Promise((resolve, reject) => { resolve(this.buildPublicUrl(`${srcDir}/${filename}`)) })
   }
 
   async load(filename: string, srcDir: string): Promise<Blob> {
     const command = new GetObjectCommand({
       Bucket: "daniim-bucket",
-      Key: filename
+      Key: `${srcDir}/${filename}`
     })
 
     const response = await this.s3Client.send(command);
@@ -36,10 +36,10 @@ export class AWSS3FileManager implements FileManager {
     return new Promise((resolve, reject) => resolve(new Blob([data])))
   }
   async save(file: Express.Multer.File, destDir: string): Promise<string> {
-    const storedFileName = `${destDir}/${this.createStoredFileName(file.originalname)}`
+    const storedFileName = `${this.createStoredFileName(file.originalname)}`
     const command = new PutObjectCommand({
       Bucket: "daniim-bucket",
-      Key: storedFileName,
+      Key: `${destDir}/${storedFileName}`,
       Body: file.buffer,
       ContentType: file.mimetype,
 

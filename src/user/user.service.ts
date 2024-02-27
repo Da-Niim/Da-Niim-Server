@@ -10,6 +10,7 @@ import { Types } from "mongoose"
 import { serialize } from "v8"
 import { FeedPostedEvent } from "src/feed/event/feed-posted-event"
 import { OnEvent } from "@nestjs/event-emitter"
+import { GetUserProfileInfoDto } from "./dto/get-user-profile-info.dto"
 
 @Injectable()
 export class UserService {
@@ -57,10 +58,10 @@ export class UserService {
     }
   }
 
-  async getUserProfileInfo(userId: Types.ObjectId) {
+  async getUserProfileInfo(userId: Types.ObjectId): Promise<GetUserProfileInfoDto> {
     const user = await this.userRepository.findOne({_id: userId})
 
-    return {
+    return new GetUserProfileInfoDto({
       name: user.nickname,
       profileUrl: user.profileImage,
       intro: user.intro,
@@ -68,7 +69,7 @@ export class UserService {
       travelogCount: user.travelogCount,
       followerCount: user.followers.length,
       followingCount: user.followings.length
-    }
+    })
   }
 
   @OnEvent("FeedPostedEvent")
