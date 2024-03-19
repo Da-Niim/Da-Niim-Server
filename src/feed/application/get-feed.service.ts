@@ -33,6 +33,7 @@ export class GetFeedService {
   }
 
   async getProfileFeeds(cmd: GetProfileFeedQuery): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
+    console.log("cmd", cmd)
     const filterQuery = { userId: cmd.target }
     const feeds = await this.feedRepository.findWithPagination(cmd.page, cmd.size, filterQuery)
     const totalElements = await this.feedRepository.count(filterQuery)

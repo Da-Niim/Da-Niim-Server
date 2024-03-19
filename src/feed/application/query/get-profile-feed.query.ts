@@ -8,7 +8,7 @@ export class GetProfileFeedQuery {
 
     constructor(data: {userId: Types.ObjectId, target: Types.ObjectId, page: number, size: number}) {
         this.userId = data.userId
-        this.target = data.target
+        this.target = data.target ? data.target : data.userId
         this.page = data.page
         this.size = data.size
     }
