@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from "class-validator";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
 import { FileManager } from "src/common/utils/file.manager";
@@ -6,7 +7,14 @@ import { GetProfileFeedQuery } from "src/feed/application/query/get-profile-feed
 import { Feed } from "src/feed/domain/feed.entity";
 
 export class GetProfileFeedRequest extends PaginationRequest {
+    @ApiProperty({type: String})
+    @IsNotEmpty()
     target: Types.ObjectId
+
+    constructor(target?: Types.ObjectId) {
+        super();
+        this.target = target;
+    }
 
     async toCommand(userId: Types.ObjectId): Promise<GetProfileFeedQuery> {
         return new GetProfileFeedQuery({

@@ -49,7 +49,7 @@ export class FeedComment extends AbstractDocument {
     return new FeedComment({
       userId: userId, 
       userName: userName,
-      feedId: this.feedId, 
+      feedId: this.feedId,
       content: content, 
       parentId: this._id,
       likeCount: 0,
