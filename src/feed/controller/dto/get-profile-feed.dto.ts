@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
@@ -9,6 +10,7 @@ import { Feed } from "src/feed/domain/feed.entity";
 export class GetProfileFeedRequest extends PaginationRequest {
     @ApiProperty({type: String})
     @IsNotEmpty()
+    @Transform(({value}) => new Types.ObjectId(value))
     target: Types.ObjectId
 
     constructor(target?: Types.ObjectId) {
