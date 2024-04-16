@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
-import { FileManager } from "src/common/utils/file.manager";
+import { FileManager } from "src/infra/file/file.manager";
 import { GetFeedQuery } from "src/feed/application/query/get-feed.query";
 import { FeedLike } from "src/feed/domain/feed-like.entity";
 import { Feed } from "src/feed/domain/feed.entity";

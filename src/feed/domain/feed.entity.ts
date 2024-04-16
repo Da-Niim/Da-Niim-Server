@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { HydratedDocument, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
-import { FileManager } from "src/common/utils/file.manager"
+import { FileManager } from "src/infra/file/file.manager"
 import { Location } from "../location.type"
 import { AddressResolver } from "./address-resolver.service"
 import { Photo } from "./photo.model"

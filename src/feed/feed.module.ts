@@ -12,7 +12,6 @@ import { AddressResolverImpl } from "./infra/address-resolver.service.impl"
 import { FeedLikeService } from "./application/feed-like.service"
 import { FeedCommentService } from "./application/feed-comment.service"
 import { EventEmitterDynamicModule } from "src/common/event-emitter.module"
-import { SupabaseFileUtils } from "src/common/utils/supabase-file.manager"
 import { PostFeedService } from "./application/post-feed.service"
 import { GetFeedService } from "./application/get-feed.service"
 import { FeedEventHandler } from "./application/feed-event.handler"
@@ -20,7 +19,7 @@ import { PostFeedController } from "./controller/post-feed.controller"
 import { GetFeedController } from "./controller/get-feed.controller"
 import { FeedLikeController } from "./controller/feed-like.controller"
 import { FeedCommentController } from "./controller/feed-comment.controller"
-import { AWSS3FileManager } from "src/common/utils/aws-s3-file.manager"
+import { AWSS3FileManager } from "src/infra/file/aws-s3-file.manager"
 
 @Module({
   imports: [
@@ -49,7 +48,6 @@ import { AWSS3FileManager } from "src/common/utils/aws-s3-file.manager"
     FeedLikeRepository,
     FeedCommentRepository,
     { provide: "addressResolverImpl", useClass: AddressResolverImpl },
-    { provide: "fileUtilsImpl", useClass: AWSS3FileManager }
   ],
 })
 export class FeedModule {}
