@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
 import { AuthModule } from "./auth/auth.module"
+import s3Config from "./common/config/s3Config"
 import { EventEmitterDynamicModule } from "./common/event-emitter.module"
 import { FeedModule } from "./feed/feed.module"
 import { FollowModule } from "./follow/follow.module"
@@ -19,6 +20,7 @@ import { UserModule } from "./user/user.module"
       envFilePath: process.env.NODE_ENV
         ? `.${process.env.NODE_ENV}.env`
         : ".env",
+      load: [s3Config]
     }),
     DatabaseModule,
     UserModule,

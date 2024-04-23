@@ -1,6 +1,6 @@
 import { AbstractFile } from "src/common/abstract.file.model"
 import { FileType } from "src/common/file-type.enum"
-import { FileManager } from "src/common/utils/file.manager"
+import { FileManager } from "src/infra/file/file.manager"
 
 export class Photo extends AbstractFile {
   constructor(originalFileName: string, storedFileName: string) {

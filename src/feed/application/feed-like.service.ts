@@ -35,9 +35,7 @@ export class FeedLikeService {
 
     async cancelLikeFeed(data: {userId: Types.ObjectId, feedId: Types.ObjectId}) { 
         const result = await this.feedLikeRepository.delete({ userId: data.userId, feedId: data.feedId })
-        
-        console.log(result)
-        
+                
         if(result.deletedCount == 1) {
             this.eventEmitter.emit("feed.likeCanceled", new FeedLikeCanceledEvent({
                 feedId: data.feedId,

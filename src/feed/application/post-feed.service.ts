@@ -4,7 +4,7 @@ import { FeedRepository } from "../infra/feed.repository"
 import { AddressResolver } from "../domain/address-resolver.service"
 import { EventEmitter2 } from "@nestjs/event-emitter"
 import { PostFeedCommand } from "./command/post-feed.command"
-import { FileManager } from "src/common/utils/file.manager"
+import { FileManager } from "src/infra/file/file.manager"
 import { FeedPostedEvent } from "../event/feed-posted-event"
 
 @Injectable()
@@ -12,7 +12,7 @@ export class PostFeedService {
   constructor(
     private readonly feedRepository: FeedRepository,
     private readonly eventEmitter: EventEmitter2,
-    @Inject("fileUtilsImpl") private readonly fileManager: FileManager,
+    @Inject("fileManager") private readonly fileManager: FileManager,
     @Inject("addressResolverImpl") private readonly addressResolver: AddressResolver,
   ) {}
 

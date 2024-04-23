@@ -3,13 +3,15 @@ import { Transform } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
 import { Types } from "mongoose";
 import { PaginationRequest } from "src/common/dto/pagination-request.dto";
-import { FileManager } from "src/common/utils/file.manager";
+import { FileManager } from "src/infra/file/file.manager";
 import { GetProfileFeedQuery } from "src/feed/application/query/get-profile-feed.query";
 import { Feed } from "src/feed/domain/feed.entity";
 
 export class GetProfileFeedRequest extends PaginationRequest {
     @ApiProperty({type: String})
-    target: string
+    @IsNotEmpty()
+    @Transform(({value}) => new Types.ObjectId(value))
+    target: Types.ObjectId
 
     constructor(target?: string) {
         super();

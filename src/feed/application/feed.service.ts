@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { OnEvent } from "@nestjs/event-emitter"
 import { PaginationResponse } from "src/common/dto/pagination-response.dto"
-import { FileManager } from "src/common/utils/file.manager"
+import { FileManager } from "src/infra/file/file.manager"
 import { UserRepository } from "src/user/repository/user.repository"
 import { GetFeedResponse } from "../controller/dto/get-feeds.dto"
 import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
@@ -25,7 +25,7 @@ export class FeedService {
     private readonly feedLikeRepository: FeedLikeRepository,
     private readonly feedCommentRepository: FeedCommentRepository,
     private readonly userRepository: UserRepository,
-    @Inject("fileUtilsImpl") private readonly fileManager: FileManager,
+    @Inject("fileManager") private readonly fileManager: FileManager,
     @Inject("addressResolverImpl")
     private readonly addressResolver: AddressResolver,
   ) {}

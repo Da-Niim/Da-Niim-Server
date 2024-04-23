@@ -5,7 +5,7 @@ import { UserRepository } from "src/user/repository/user.repository"
 import { PaginationResponse } from "src/common/dto/pagination-response.dto"
 import { GetFeedResponse } from "../controller/dto/get-feeds.dto"
 import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
-import { FileManager } from "src/common/utils/file.manager"
+import { FileManager } from "src/infra/file/file.manager"
 import { GetFeedQuery } from "./query/get-feed.query"
 import { GetProfileFeedQuery } from "./query/get-profile-feed.query"
 
@@ -15,7 +15,7 @@ export class GetFeedService {
     private readonly feedRepository: FeedRepository,
     private readonly feedLikeRepository: FeedLikeRepository,
     private readonly userRepository: UserRepository,
-    @Inject("fileUtilsImpl") private readonly fileManager: FileManager,
+    @Inject("fileManager") private readonly fileManager: FileManager,
   ) {}
 
   async getFeeds(cmd: GetFeedQuery): Promise<PaginationResponse<GetFeedResponse[]>> {
