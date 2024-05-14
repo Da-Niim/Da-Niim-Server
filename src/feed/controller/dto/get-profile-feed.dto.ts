@@ -13,7 +13,7 @@ export class GetProfileFeedRequest extends PaginationRequest {
     @Transform(({value}) => new Types.ObjectId(value))
     target: Types.ObjectId
 
-    constructor(target?: Types.ObjectId) {
+    constructor(target?: string) {
         super();
         this.target = target;
     }
@@ -21,7 +21,7 @@ export class GetProfileFeedRequest extends PaginationRequest {
     async toCommand(userId: Types.ObjectId): Promise<GetProfileFeedQuery> {
         return new GetProfileFeedQuery({
             userId: userId,
-            target: this.target,
+            target: this.target ? new Types.ObjectId(this.target) : null,
             page: this.page,
             size: this.size
         })
