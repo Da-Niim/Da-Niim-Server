@@ -31,7 +31,6 @@ export class FileController {
 
   @Get()
   async getPresignedUrlForUpload(@Query('filename') filename: string) {
-    console.log('filename = ', filename)
     return await this.fileService.preparePresignedUrlUpload(filename)
   }
 }
