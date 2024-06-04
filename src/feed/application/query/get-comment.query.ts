@@ -1,8 +1,8 @@
-import { Types } from "mongoose";
+import { Types } from "mongoose"
 
 export type GetCommentQuery = {
-    page: number,
-    size: number,
-    feedId: Types.ObjectId,
-    userId: Types.ObjectId
+  page: number
+  size: number
+  feedId: Types.ObjectId
+  userId: Types.ObjectId
 }

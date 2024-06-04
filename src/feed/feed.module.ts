@@ -1,13 +1,12 @@
+import { FeedCommentPersistenceAdapter } from "./infra/db/feed-comment.persistence-adapter"
 import { Module } from "@nestjs/common"
 import { MongooseModule } from "@nestjs/mongoose"
 import { FileModule } from "src/infra/file/file.module"
 import { Feed, FeedSchema } from "./domain/feed.entity"
-import { FeedRepository } from "./infra/feed.repository"
 import { FeedLike, FeedLikeSchema } from "./domain/feed-like.entity"
-import { FeedLikeRepository } from "./infra/feed-like.repository"
 import { UserModule } from "src/user/user.module"
-import { FeedComment, FeedCommentSchema } from "./domain/feed-comment.entity"
-import { FeedCommentRepository } from "./infra/feed-comment.repository"
+import { FeedComment } from "./domain/feed-comment.domain-entity"
+import { FeedCommentRepository } from "./infra/db/feed-comment.repository"
 import { AddressResolverImpl } from "./infra/address-resolver.service.impl"
 import { FeedLikeService } from "./application/feed-like.service"
 import { FeedCommentService } from "./application/feed-comment.service"
@@ -19,7 +18,9 @@ import { PostFeedController } from "./controller/post-feed.controller"
 import { GetFeedController } from "./controller/get-feed.controller"
 import { FeedLikeController } from "./controller/feed-like.controller"
 import { FeedCommentController } from "./controller/feed-comment.controller"
-import { AWSS3FileManager } from "src/infra/file/aws-s3-file.manager"
+import { FeedCommentSchema } from "./infra/db/feed-comment.db-entity"
+import { FeedRepository } from "./infra/db/feed.repository"
+import { FeedLikeRepository } from "./infra/db/feed-like.repository"
 
 @Module({
   imports: [
@@ -47,6 +48,10 @@ import { AWSS3FileManager } from "src/infra/file/aws-s3-file.manager"
     FeedRepository,
     FeedLikeRepository,
     FeedCommentRepository,
+    {
+      provide: "feedCommentPersistenceAdapterImpl",
+      useClass: FeedCommentPersistenceAdapter,
+    },
     { provide: "addressResolverImpl", useClass: AddressResolverImpl },
   ],
 })

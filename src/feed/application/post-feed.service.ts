@@ -1,11 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { Feed } from "../domain/feed.entity"
-import { FeedRepository } from "../infra/feed.repository"
 import { AddressResolver } from "../domain/address-resolver.service"
 import { EventEmitter2 } from "@nestjs/event-emitter"
 import { PostFeedCommand } from "./command/post-feed.command"
 import { FileManager } from "src/infra/file/file.manager"
 import { FeedPostedEvent } from "../event/feed-posted-event"
+import { FeedRepository } from "../infra/db/feed.repository"
 
 @Injectable()
 export class PostFeedService {
@@ -13,7 +13,8 @@ export class PostFeedService {
     private readonly feedRepository: FeedRepository,
     private readonly eventEmitter: EventEmitter2,
     @Inject("fileManager") private readonly fileManager: FileManager,
-    @Inject("addressResolverImpl") private readonly addressResolver: AddressResolver,
+    @Inject("addressResolverImpl")
+    private readonly addressResolver: AddressResolver,
   ) {}
 
   async postFeed(cmd: PostFeedCommand): Promise<string> {
@@ -31,7 +32,10 @@ export class PostFeedService {
     })
     const saved = await this.feedRepository.create(feed)
 
-    this.eventEmitter.emit("FeedPostedEvent", new FeedPostedEvent({userId: cmd.userId}))
+    this.eventEmitter.emit(
+      "FeedPostedEvent",
+      new FeedPostedEvent({ userId: cmd.userId }),
+    )
 
     return saved._id.toString()
   }

@@ -6,7 +6,6 @@ import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer
 import { diskStorage } from "multer"
 import s3Storage from "multer-s3"
 import { extname } from "path"
-import { IllegalArgumentException } from "src/common/exceptions/illegal-argument.exception"
 import { v4 as uuid } from "uuid"
 
 @Injectable()

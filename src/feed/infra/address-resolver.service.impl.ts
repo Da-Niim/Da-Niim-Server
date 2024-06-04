@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { KakaoAPIClient } from "src/common/api-client/kakao-api-client"
+import { KakaoAPIClient } from "src/common/infra/api-client/kakao-api-client"
 import { CoordDto, ExifParser } from "src/common/utils/exif-parser.util"
 import { AddressResolver } from "../domain/address-resolver.service"
 

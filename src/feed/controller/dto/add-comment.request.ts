@@ -12,9 +12,9 @@ export class AddCommentRequest {
   content: string
 
   toAddCommand(data: {
-    userId: Types.ObjectId,
-    userName: string,
-    feedId: Types.ObjectId,
+    userId: Types.ObjectId
+    userName: string
+    feedId: Types.ObjectId
   }): AddCommentCommand {
     return {
       userId: data.userId,
@@ -25,10 +25,10 @@ export class AddCommentRequest {
   }
 
   toAddSubCommand(data: {
-    userId: Types.ObjectId,
-    userName: string,
-    feedId: Types.ObjectId,
-    commentId: Types.ObjectId,
+    userId: Types.ObjectId
+    userName: string
+    feedId: Types.ObjectId
+    commentId: Types.ObjectId
   }): AddSubCommentCommand {
     return {
       userId: data.userId,

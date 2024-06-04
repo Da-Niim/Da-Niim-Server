@@ -7,7 +7,6 @@ import { ENV_HASH_ROUNDS_KEY } from "src/common/const/env-keys.const"
 import { Request } from "express"
 import { User } from "./entity/user.entity"
 import { Types } from "mongoose"
-import { serialize } from "v8"
 import { FeedPostedEvent } from "src/feed/event/feed-posted-event"
 import { OnEvent } from "@nestjs/event-emitter"
 import { GetUserProfileInfoDto } from "./dto/get-user-profile-info.dto"
@@ -58,8 +57,10 @@ export class UserService {
     }
   }
 
-  async getUserProfileInfo(userId: Types.ObjectId): Promise<GetUserProfileInfoDto> {
-    const user = await this.userRepository.findOne({_id: userId})
+  async getUserProfileInfo(
+    userId: Types.ObjectId,
+  ): Promise<GetUserProfileInfoDto> {
+    const user = await this.userRepository.findOne({ _id: userId })
 
     return new GetUserProfileInfoDto({
       name: user.nickname,
@@ -68,16 +69,16 @@ export class UserService {
       postCount: user.postCount,
       travelogCount: user.travelogCount,
       followerCount: user.followers.length,
-      followingCount: user.followings.length
+      followingCount: user.followings.length,
     })
   }
 
   @OnEvent("FeedPostedEvent")
   async onFeedPosted(event: FeedPostedEvent) {
-    const user = await this.userRepository.findOne({_id: event.userId})
+    const user = await this.userRepository.findOne({ _id: event.userId })
 
     user.postCount += 1
 
-    this.userRepository.findOneAndUpdate({_id: event.userId}, user)
+    this.userRepository.findOneAndUpdate({ _id: event.userId }, user)
   }
 }

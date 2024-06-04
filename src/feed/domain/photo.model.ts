@@ -10,12 +10,18 @@ export class Photo extends AbstractFile {
     this.type = FileType.PHOTO
   }
 
-  static async of(destDir: string, files: Express.Multer.File[], fileManager: FileManager): Promise<Photo[]> {
-    if(files.length > 0) {
-      return Promise.all(files.map(async (f) => {
-        const storedFileName = await fileManager.save(f, destDir)
-        return new Photo(f.originalname, storedFileName)
-      }))
+  static async of(
+    destDir: string,
+    files: Express.Multer.File[],
+    fileManager: FileManager,
+  ): Promise<Photo[]> {
+    if (files.length > 0) {
+      return Promise.all(
+        files.map(async (f) => {
+          const storedFileName = await fileManager.save(f, destDir)
+          return new Photo(f.originalname, storedFileName)
+        }),
+      )
     } else {
       return null
     }

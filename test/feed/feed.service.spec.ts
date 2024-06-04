@@ -1,17 +1,17 @@
 import { Test } from "@nestjs/testing"
 import { Types } from "mongoose"
-import { FeedRepository } from "src/feed/infra/feed.repository"
 import { Readable } from "stream"
-import { PostFeedRequest } from "src/feed/controller/dto/post-feed.dto"
 import { PostFeedCommand } from "src/feed/application/command/post-feed.command"
-import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
+import { ModuleMocker, MockFunctionMetadata } from "jest-mock"
+import { FeedService } from "src/feed/application/feed.service"
+import { FeedRepository } from "src/feed/infra/db/feed.repository"
 
-const moduleMocker = new ModuleMocker(global);
-
+const moduleMocker = new ModuleMocker(global)
 
 describe("FeedService", () => {
   let feedService: FeedService
-  const mockCreatefn = jest.fn()
+  const mockCreatefn = jest
+    .fn()
     .mockReturnValue({ _id: Types.ObjectId.generate() })
 
   beforeEach(async () => {
@@ -23,11 +23,12 @@ describe("FeedService", () => {
           return {
             create: mockCreatefn,
           }
-        }
-        else {
-          const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-          const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-          return new Mock();
+        } else {
+          const mockMetadata = moduleMocker.getMetadata(
+            token,
+          ) as MockFunctionMetadata<any, any>
+          const Mock = moduleMocker.generateFromMetadata(mockMetadata)
+          return new Mock()
         }
       })
       .compile()
@@ -57,9 +58,9 @@ describe("FeedService", () => {
       expenses: 10,
       numOfPeople: 10,
       tag: ["tag"],
-      files: [file]
+      files: [file],
     }
-   
+
     await feedService.postFeed(cmd)
 
     expect(mockCreatefn).toBeCalled()

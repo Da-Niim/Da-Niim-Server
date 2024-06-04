@@ -1,7 +1,6 @@
 import { Logger } from "@nestjs/common"
 import { ClassConstructor, plainToInstance } from "class-transformer"
 import {
-  Connection,
   FilterQuery,
   Model,
   PipelineStage,
@@ -10,6 +9,7 @@ import {
   UpdateQuery,
 } from "mongoose"
 import { AbstractDocument } from "./abstract.schema"
+import { Pageable } from "./dto/pageable.dto"
 import { DocumentNotFoundException } from "./exceptions/not-found.exception"
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
@@ -81,11 +81,15 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   async find(filterQuery: FilterQuery<TDocument>) {
     return this.model.find(filterQuery, {}, { lean: true })
   }
-  
-  async findWithPagination(page: number, size: number, filterQuery: FilterQuery<TDocument>) {
-    return this.model.find(filterQuery, {}, { lean: true})
-    .limit(size)
-    .skip(page * size)
+
+  async findWithPagination(
+    pageable: Pageable,
+    filterQuery: FilterQuery<TDocument>,
+  ) {
+    return this.model
+      .find(filterQuery, {}, { lean: true })
+      .limit(pageable.size)
+      .skip(pageable.page * pageable.size)
   }
 
   async count(filterQuery: FilterQuery<TDocument>) {

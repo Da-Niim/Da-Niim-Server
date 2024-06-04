@@ -1,4 +1,4 @@
 export type GetPresignedUrlResponse = {
-    presignedUrl: string,
-    key: string,
+  presignedUrl: string
+  key: string
 }

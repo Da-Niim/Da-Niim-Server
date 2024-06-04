@@ -1,4 +1,4 @@
-import { KakaoAPIClient } from "src/common/api-client/kakao-api-client"
+import { KakaoAPIClient } from "src/common/infra/api-client/kakao-api-client"
 
 describe("Kakao API client test", () => {
   it("coord2Address", async () => {

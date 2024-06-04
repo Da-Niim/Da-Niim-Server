@@ -1,9 +1,9 @@
-import { Types } from "mongoose";
+import { Types } from "mongoose"
 
 export class FeedPostedEvent {
-    userId: Types.ObjectId
+  userId: Types.ObjectId
 
-    constructor(data: {userId: Types.ObjectId}) {
-        this.userId = data.userId
-    }
+  constructor(data: { userId: Types.ObjectId }) {
+    this.userId = data.userId
+  }
 }
