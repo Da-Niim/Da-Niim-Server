@@ -2,10 +2,10 @@ import { FeedCommentRepository } from "./feed-comment.repository"
 import { Injectable } from "@nestjs/common"
 import { FeedComment } from "src/feed/domain/feed-comment.domain-entity"
 import { FeedCommentDBEntity } from "./feed-comment.db-entity"
-import { FeedCommentPersistentPort } from "src/feed/application/port/feed-comment.persistent-port"
-import { Pageable } from "src/common/dto/pageable.dto"
 import { AbstractPersistenceAdapter } from "src/common/infra/db/abstract.persistence-adapter"
 import { FeedCommentEntityMapper } from "./feed-comment.mapper"
+import { Pageable } from "@types"
+import { FeedCommentPersistentPort } from "src/feed/domain/port/feed-comment.persistent-port"
 
 @Injectable()
 export class FeedCommentPersistenceAdapter

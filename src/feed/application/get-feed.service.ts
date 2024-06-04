@@ -1,13 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { UserRepository } from "src/user/repository/user.repository"
-import { PaginationResponse } from "src/common/dto/pagination-response.dto"
-import { GetFeedResponse } from "../controller/dto/get-feeds.dto"
-import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
 import { FileManager } from "src/infra/file/file.manager"
-import { GetFeedQuery } from "./query/get-feed.query"
-import { GetProfileFeedQuery } from "./query/get-profile-feed.query"
 import { FeedRepository } from "../infra/db/feed.repository"
 import { FeedLikeRepository } from "../infra/db/feed-like.repository"
+import { PaginationResponse } from "@types"
+import { GetFeedResponse, GetProfileFeedResponse } from "@feed/response"
+import { GetFeedQuery, GetProfileFeedQuery } from "./query"
 
 @Injectable()
 export class GetFeedService {

@@ -1,22 +1,22 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { OnEvent } from "@nestjs/event-emitter"
-import { PaginationResponse } from "src/common/dto/pagination-response.dto"
 import { FileManager } from "src/infra/file/file.manager"
 import { UserRepository } from "src/user/repository/user.repository"
-import { GetFeedResponse } from "../controller/dto/get-feeds.dto"
-import { GetProfileFeedResponse } from "../controller/dto/get-profile-feed.dto"
 import { AddressResolver } from "../domain/address-resolver.service"
 import { Feed } from "../domain/feed.entity"
-import { FeedCommentAddedEvent } from "../event/feed-comment-added.event"
-import { FeedCommentDeletedEvent } from "../event/feed-comment-deleted.event"
-import { FeedLikeCanceledEvent } from "../event/feed-like-canceled.event"
-import { FeedLikedEvent } from "../event/feed-liked.event"
 import { FeedCommentRepository } from "../infra/db/feed-comment.repository"
-import { PostFeedCommand } from "./command/post-feed.command"
-import { GetFeedQuery } from "./query/get-feed.query"
-import { GetProfileFeedQuery } from "./query/get-profile-feed.query"
-import { FeedRepository } from "../infra/db/feed.repository"
 import { FeedLikeRepository } from "../infra/db/feed-like.repository"
+import { PaginationResponse } from "@types"
+import { GetFeedResponse, GetProfileFeedResponse } from "@feed/response"
+import { FeedRepository } from "../infra/db/feed.repository"
+import { PostFeedCommand } from "./command"
+import { GetFeedQuery, GetProfileFeedQuery } from "./query"
+import {
+  FeedLikedEvent,
+  FeedLikeCanceledEvent,
+  FeedCommentAddedEvent,
+  FeedCommentDeletedEvent,
+} from "@feed/event"
 
 @Injectable()
 export class FeedService {

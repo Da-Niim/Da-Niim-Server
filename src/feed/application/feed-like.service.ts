@@ -3,9 +3,8 @@ import { EventEmitter2 } from "@nestjs/event-emitter"
 import { Types } from "mongoose"
 import { FeedLike } from "../domain/feed-like.entity"
 import { AlreadyLikedFeedException } from "../exception/already-like-feed.exception"
-import { FeedLikedEvent } from "../event/feed-liked.event"
-import { FeedLikeCanceledEvent } from "../event/feed-like-canceled.event"
 import { FeedLikeRepository } from "../infra/db/feed-like.repository"
+import { FeedLikedEvent, FeedLikeCanceledEvent } from "@feed/event"
 
 @Injectable()
 export class FeedLikeService {

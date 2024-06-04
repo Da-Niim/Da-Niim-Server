@@ -1,5 +1,5 @@
+import { Pageable } from "@types"
 import { Types } from "mongoose"
-import { Pageable } from "src/common/dto/pageable.dto"
 import { FeedComment } from "src/feed/domain/feed-comment.domain-entity"
 
 export interface FeedCommentPersistentPort {

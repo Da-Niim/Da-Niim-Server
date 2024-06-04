@@ -3,7 +3,7 @@ import { applyDecorators } from "@nestjs/common/decorators/core/apply-decorators
 import { ApiExtraModels } from "@nestjs/swagger/dist/decorators/api-extra-models.decorator"
 import { ApiOkResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator"
 import { getSchemaPath } from "@nestjs/swagger/dist/utils/get-schema-path.util"
-import { PaginationResponse } from "../dto/pagination-response.dto"
+import { PaginationResponse } from "@types"
 
 export const ApiOkResponsePaginated = <DataDto extends Type<unknown>>(
   dataDto: DataDto,

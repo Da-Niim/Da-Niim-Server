@@ -2,10 +2,10 @@ import { Inject, Injectable } from "@nestjs/common"
 import { Feed } from "../domain/feed.entity"
 import { AddressResolver } from "../domain/address-resolver.service"
 import { EventEmitter2 } from "@nestjs/event-emitter"
-import { PostFeedCommand } from "./command/post-feed.command"
 import { FileManager } from "src/infra/file/file.manager"
-import { FeedPostedEvent } from "../event/feed-posted-event"
 import { FeedRepository } from "../infra/db/feed.repository"
+import { PostFeedCommand } from "./command"
+import { FeedPostedEvent } from "@feed/event"
 
 @Injectable()
 export class PostFeedService {
