@@ -19,11 +19,11 @@ describe("Feed Entity", () => {
       //   () => new Feed({...input}),
       // ).toThrow()
     })
-  });
+  })
 
   describe("like feed", () => {
     it("should increase 1 to likeCount", () => {
-      const feed = new Feed({ likeCount: 0})
+      const feed = new Feed({ likeCount: 0 })
       feed.like()
       expect(feed.likeCount).toBe(1)
     })
@@ -31,7 +31,7 @@ describe("Feed Entity", () => {
 
   describe("cancel feed like", () => {
     it("should decrease 1 to likeCount", () => {
-      const feed = new Feed({ likeCount: 1})
+      const feed = new Feed({ likeCount: 1 })
       feed.cancelLike()
       expect(feed.likeCount).toBe(0)
     })
@@ -39,16 +39,15 @@ describe("Feed Entity", () => {
 
   describe("add comment", () => {
     it("should increase 1 to commentCount", () => {
-      const feed = new Feed({ commentCount: 0})
+      const feed = new Feed({ commentCount: 0 })
       feed.addComment()
       expect(feed.commentCount).toBe(1)
     })
   })
 
-
   describe("delete comment", () => {
     it("should decrease 1 to commentCount", () => {
-      const feed = new Feed({ commentCount: 1})
+      const feed = new Feed({ commentCount: 1 })
       feed.deleteComment()
       expect(feed.commentCount).toBe(0)
     })

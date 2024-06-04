@@ -1,6 +1,6 @@
 export type PagenationInfo = {
-    page: number,
-    size: number,
-    totalPages: number,
-    totalElements: number,
+  page: number
+  size: number
+  totalPages: number
+  totalElements: number
 }

@@ -7,11 +7,12 @@ import {
   Types,
 } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
+import { FeedComment } from "src/feed/domain/feed-comment.domain-entity"
 
 export type FeedCommentDocument = HydratedDocument<FeedComment>
 
 @Schema({ timestamps: true })
-export class FeedComment extends AbstractDocument {
+export class FeedCommentDBEntity extends AbstractDocument {
   @Prop({ type: SchemaTypes.ObjectId, required: true })
   userId: Types.ObjectId
   @Prop({ type: String, required: true })
@@ -27,34 +28,17 @@ export class FeedComment extends AbstractDocument {
   @Prop({ type: Number, required: true })
   commentCount: number
 
-  constructor(feedCommentProps: Partial<FeedComment>) {
+  constructor(feedCommentProps: Partial<FeedCommentDBEntity>) {
     super()
     Object.assign(this, feedCommentProps)
   }
 
-  static async create(data: { content: string, feedId: Types.ObjectId, userId: Types.ObjectId, userName: string }): Promise<FeedComment> {
-    return new FeedComment({
-      userId: data.userId,
-      userName: data.userName,
-      feedId: data.feedId,
-      content: data.content,
-      likeCount: 0,
-      commentCount: 0
-    })
+  static fromDomain(domain: FeedComment): FeedCommentDBEntity {
+    return new FeedCommentDBEntity(domain)
   }
 
-  addSubComment(userId: Types.ObjectId, userName: string, content: string): FeedComment {
-    this.commentCount++
-    
-    return new FeedComment({
-      userId: userId, 
-      userName: userName,
-      feedId: this.feedId,
-      content: content, 
-      parentId: this._id,
-      likeCount: 0,
-      commentCount: 0
-    })
+  toDomain(): FeedComment {
+    return new FeedComment(this)
   }
 }
 

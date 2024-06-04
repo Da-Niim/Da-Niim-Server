@@ -1,5 +1,4 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common"
-import { IllegalArgumentException } from "src/common/exceptions/illegal-argument.exception"
 import { NotAcceptableMimeTypeException } from "./file.exception"
 
 @Injectable()

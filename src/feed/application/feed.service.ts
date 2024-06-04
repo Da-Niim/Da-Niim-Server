@@ -11,12 +11,12 @@ import { FeedCommentAddedEvent } from "../event/feed-comment-added.event"
 import { FeedCommentDeletedEvent } from "../event/feed-comment-deleted.event"
 import { FeedLikeCanceledEvent } from "../event/feed-like-canceled.event"
 import { FeedLikedEvent } from "../event/feed-liked.event"
-import { FeedCommentRepository } from "../infra/feed-comment.repository"
-import { FeedLikeRepository } from "../infra/feed-like.repository"
-import { FeedRepository } from "../infra/feed.repository"
+import { FeedCommentRepository } from "../infra/db/feed-comment.repository"
 import { PostFeedCommand } from "./command/post-feed.command"
 import { GetFeedQuery } from "./query/get-feed.query"
 import { GetProfileFeedQuery } from "./query/get-profile-feed.query"
+import { FeedRepository } from "../infra/db/feed.repository"
+import { FeedLikeRepository } from "../infra/db/feed-like.repository"
 
 @Injectable()
 export class FeedService {
@@ -52,8 +52,7 @@ export class FeedService {
     cmd: GetFeedQuery,
   ): Promise<PaginationResponse<GetFeedResponse[]>> {
     const feeds = await this.feedRepository.findWithPagination(
-      cmd.page,
-      cmd.size,
+      { page: cmd.page, size: cmd.size },
       null,
     )
     const totalElements = await this.feedRepository.count(null)
@@ -76,8 +75,7 @@ export class FeedService {
   ): Promise<PaginationResponse<GetProfileFeedResponse[]>> {
     const filterQuery = { userId: cmd.userId }
     const feeds = await this.feedRepository.findWithPagination(
-      cmd.page,
-      cmd.size,
+      { page: cmd.page, size: cmd.size },
       filterQuery,
     )
     const totalElements = await this.feedRepository.count(filterQuery)

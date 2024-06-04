@@ -1,11 +1,11 @@
 import { Types } from "mongoose"
 
 export class FeedLikedEvent {
-    feedId: Types.ObjectId
-    userId: Types.ObjectId
+  feedId: Types.ObjectId
+  userId: Types.ObjectId
 
-    constructor(data: {feedId: Types.ObjectId, userId: Types.ObjectId}) {
-        this.feedId = data.feedId
-        this.userId = data.userId
-    }
+  constructor(data: { feedId: Types.ObjectId; userId: Types.ObjectId }) {
+    this.feedId = data.feedId
+    this.userId = data.userId
+  }
 }

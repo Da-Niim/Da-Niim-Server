@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common"
-import { InjectConnection, InjectModel } from "@nestjs/mongoose"
-import { Connection, Model, Types } from "mongoose"
+import { InjectModel } from "@nestjs/mongoose"
+import { Model, Types } from "mongoose"
 import { User } from "../entity/user.entity"
 import { AbstractRepository } from "src/common/abstract.repository"
 
@@ -8,9 +8,7 @@ import { AbstractRepository } from "src/common/abstract.repository"
 export class UserRepository extends AbstractRepository<User> {
   logger: Logger
 
-  constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-  ) {
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {
     super(userModel, User)
     this.logger = new Logger(UserRepository.name)
   }

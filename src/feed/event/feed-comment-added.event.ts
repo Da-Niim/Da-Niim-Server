@@ -1,11 +1,11 @@
-import { Types } from "mongoose";
+import { Types } from "mongoose"
 
 export class FeedCommentAddedEvent {
-    feedId: Types.ObjectId
-    userId: Types.ObjectId
+  feedId: Types.ObjectId
+  userId: Types.ObjectId
 
-    constructor(data: {feedId: Types.ObjectId, userId: Types.ObjectId}) {
-        this.feedId = data.feedId
-        this.userId = data.userId
-    }
+  constructor(data: { feedId: Types.ObjectId; userId: Types.ObjectId }) {
+    this.feedId = data.feedId
+    this.userId = data.userId
+  }
 }

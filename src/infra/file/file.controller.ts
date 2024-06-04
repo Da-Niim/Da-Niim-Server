@@ -1,22 +1,17 @@
 import {
   Controller,
-  FileTypeValidator,
   Get,
-  Param,
-  ParseFilePipe,
   Post,
   Query,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express"
-import { Transform } from "class-transformer"
 import { ImageFileValidationPipe } from "./file.imageFileValidation.pipe"
 import FileService from "./file.service"
 
 @Controller("files")
 export class FileController {
-
   constructor(private readonly fileService: FileService) {}
 
   @Post()
@@ -30,7 +25,7 @@ export class FileController {
   }
 
   @Get()
-  async getPresignedUrlForUpload(@Query('filename') filename: string) {
+  async getPresignedUrlForUpload(@Query("filename") filename: string) {
     return await this.fileService.preparePresignedUrlUpload(filename)
   }
 }

@@ -11,7 +11,7 @@ export class FeedLike extends AbstractDocument {
   @Prop({ type: SchemaTypes.ObjectId, required: true })
   userId: Types.ObjectId
 
-  constructor(data: {feedId: Types.ObjectId, userId: Types.ObjectId}) {
+  constructor(data: { feedId: Types.ObjectId; userId: Types.ObjectId }) {
     super()
     this.feedId = data.feedId
     this.userId = data.userId

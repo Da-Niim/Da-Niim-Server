@@ -20,7 +20,7 @@ import { UserModule } from "./user/user.module"
       envFilePath: process.env.NODE_ENV
         ? `.${process.env.NODE_ENV}.env`
         : ".env",
-      load: [s3Config]
+      load: [s3Config],
     }),
     DatabaseModule,
     UserModule,
