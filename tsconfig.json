@@ -16,6 +16,14 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@types": ["src/common/types"],
+      "@feed/request": ["src/feed/controller/dto/request"],
+      "@feed/response": ["src/feed/controller/dto/response"],
+      "@feed/command": ["src/feed/application/command"],
+      "@feed/query": ["src/feed/application/query"],
+      "@feed/event": ["src/feed/domain/event"],
+    }
+  },
 }

@@ -1,11 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import {
-  FlattenMaps,
-  HydratedDocument,
-  Require_id,
-  SchemaTypes,
-  Types,
-} from "mongoose"
+import { HydratedDocument, SchemaTypes, Types } from "mongoose"
 import { AbstractDocument } from "src/common/abstract.schema"
 import { FeedComment } from "src/feed/domain/feed-comment.domain-entity"
 

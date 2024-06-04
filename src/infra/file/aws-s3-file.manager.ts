@@ -70,7 +70,7 @@ export class AWSS3FileManager implements FileManager {
     })
 
     const putObjectResult = await this.s3Client.send(command)
-    return storedFileName
+    return `${destDir}/${storedFileName}`
   }
 
   createStoredFileName(originalname: string): string {

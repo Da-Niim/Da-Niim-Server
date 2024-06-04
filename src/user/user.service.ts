@@ -7,9 +7,9 @@ import { ENV_HASH_ROUNDS_KEY } from "src/common/const/env-keys.const"
 import { Request } from "express"
 import { User } from "./entity/user.entity"
 import { Types } from "mongoose"
-import { FeedPostedEvent } from "src/feed/event/feed-posted-event"
 import { OnEvent } from "@nestjs/event-emitter"
 import { GetUserProfileInfoDto } from "./dto/get-user-profile-info.dto"
+import { FeedPostedEvent } from "@feed/event"
 
 @Injectable()
 export class UserService {

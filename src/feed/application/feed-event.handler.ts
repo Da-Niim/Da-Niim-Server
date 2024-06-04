@@ -1,11 +1,13 @@
 import { Injectable } from "@nestjs/common"
 import { Feed } from "../domain/feed.entity"
 import { OnEvent } from "@nestjs/event-emitter"
-import { FeedLikedEvent } from "../event/feed-liked.event"
-import { FeedCommentAddedEvent } from "../event/feed-comment-added.event"
-import { FeedLikeCanceledEvent } from "../event/feed-like-canceled.event"
-import { FeedCommentDeletedEvent } from "../event/feed-comment-deleted.event"
 import { FeedRepository } from "../infra/db/feed.repository"
+import {
+  FeedLikedEvent,
+  FeedLikeCanceledEvent,
+  FeedCommentAddedEvent,
+  FeedCommentDeletedEvent,
+} from "@feed/event"
 
 @Injectable()
 export class FeedEventHandler {

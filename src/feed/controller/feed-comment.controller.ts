@@ -11,16 +11,16 @@ import {
 import { Request } from "express"
 import { Types } from "mongoose"
 import { BearerTokenGuard } from "src/auth/guard/bearer-token.guard"
-import { AddCommentRequest } from "./dto/add-comment.request"
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger"
 import { FeedCommentService } from "../application/feed-comment.service"
-import { GetCommentRequest, GetCommentResponse } from "./dto/get-comment.dto"
-import { PaginationResponse } from "src/common/dto/pagination-response.dto"
 import { ApiOkResponsePaginated } from "src/common/decorators/api-pagination-response.decorator"
 import {
+  AddCommentRequest,
+  GetCommentRequest,
   GetSubCommentRequest,
-  GetSubCommentResponse,
-} from "./dto/get-sub-comment.dto"
+} from "@feed/request"
+import { PaginationResponse } from "@types"
+import { GetCommentResponse, GetSubCommentResponse } from "@feed/response"
 
 @Controller("feeds")
 @ApiTags("feeds")

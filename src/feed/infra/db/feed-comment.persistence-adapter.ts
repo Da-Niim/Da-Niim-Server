@@ -1,32 +1,40 @@
 import { FeedCommentRepository } from "./feed-comment.repository"
 import { Injectable } from "@nestjs/common"
-import { Types } from "mongoose"
 import { FeedComment } from "src/feed/domain/feed-comment.domain-entity"
 import { FeedCommentDBEntity } from "./feed-comment.db-entity"
-import { FeedCommentPersistentPort } from "src/feed/application/port/feed-comment.persistent-port"
-import { Pageable } from "src/common/dto/pageable.dto"
+import { AbstractPersistenceAdapter } from "src/common/infra/db/abstract.persistence-adapter"
+import { FeedCommentEntityMapper } from "./feed-comment.mapper"
+import { Pageable } from "@types"
+import { FeedCommentPersistentPort } from "src/feed/domain/port/feed-comment.persistent-port"
 
 @Injectable()
 export class FeedCommentPersistenceAdapter
+  extends AbstractPersistenceAdapter<
+    FeedComment,
+    FeedCommentDBEntity,
+    FeedCommentRepository,
+    FeedCommentEntityMapper
+  >
   implements FeedCommentPersistentPort
 {
-  constructor(private readonly repository: FeedCommentRepository) {}
-
-  async save(domain: FeedComment): Promise<FeedComment> {
-    const savedDBEntity = await this.repository.create(
-      FeedCommentDBEntity.fromDomain(domain),
-    )
-
-    return savedDBEntity.toDomain()
+  constructor(repository: FeedCommentRepository) {
+    super(repository, new FeedCommentEntityMapper(), FeedCommentDBEntity)
   }
 
-  async getById(id: Types.ObjectId): Promise<FeedComment> {
-    const dbEntity = new FeedCommentDBEntity(
-      await this.repository.getOne({ _id: id }),
-    )
+  //   async save(domain: FeedComment): Promise<FeedComment> {
+  //     const savedDBEntity = await this.repository.create(
+  //       FeedCommentDBEntity.fromDomain(domain),
+  //     )
+  //     return this.mapper.toDomainEntity(savedDBEntity)
+  //   }
 
-    return dbEntity.toDomain()
-  }
+  //   async getById(id: Types.ObjectId): Promise<FeedComment> {
+  //     const dbEntity = new FeedCommentDBEntity(
+  //       await this.repository.getOne({ _id: id }),
+  //     )
+
+  //     return dbEntity.toDomain()
+  //   }
 
   async upsert(domain: FeedComment): Promise<FeedComment> {
     const dbEntity = FeedCommentDBEntity.fromDomain(domain)

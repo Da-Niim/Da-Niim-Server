@@ -9,8 +9,8 @@ import {
   UpdateQuery,
 } from "mongoose"
 import { AbstractDocument } from "./abstract.schema"
-import { Pageable } from "./dto/pageable.dto"
 import { DocumentNotFoundException } from "./exceptions/not-found.exception"
+import { Pageable } from "@types"
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   protected abstract readonly logger: Logger
